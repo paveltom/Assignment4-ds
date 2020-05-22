@@ -26,18 +26,44 @@ public class BTree<T extends Comparable<T>> {
      *            of the B-Tree.
      */
     public BTree(int order) {
-        this.minKeySize = order;
+        this.minKeySize = order-1; //changed: '-1' added
         this.minChildrenSize = minKeySize + 1;
-        this.maxKeySize = 2 * minKeySize;
+        this.maxKeySize = (2 * minKeySize)-1; //changed: '-1' added
         this.maxChildrenSize = maxKeySize + 1;
     }
-    
+
+
     //Task 2.1
     public boolean insert(T value) {
-    	// TODO: implement your code here
+        //if root == null: create a new root and insert the value into it
+
+        if (root == null) {
+            root = new Node<T>(null, maxKeySize, maxChildrenSize);
+            root.addKey(value);
+        }
+
+        else{
+            Node<T> curr = this.root;
+            if (curr.childrenSize == this.maxChildrenSize) throw new UnsupportedOperationException(); //delete break
+
+        }
+
+
+
+        //else: create a new node that firstly will receive a root
+        // then enter an while loop and go through the tree
+        // every node the while loop meets has to be splat if it is full
+        // while function runs until it reaches a leaf to insert the value
+
+
 		return false;
     }
-	
+
+    private void insertNonFull(T value) {
+
+    }
+
+
     public T delete(T value) {
     	// TODO: implement your code here
 		return null;
@@ -142,9 +168,9 @@ public class BTree<T extends Comparable<T>> {
             // new root, height of tree is increased
             Node<T> newRoot = new Node<T>(null, maxKeySize, maxChildrenSize);
             newRoot.addKey(medianValue);
-            node.parent = newRoot;
+            node.parent = newRoot; //??????????????????????????????????????????????????????????
             root = newRoot;
-            node = root;
+            node = root; //????????????????????????????????????
             node.addChild(left);
             node.addChild(right);
         } else {
@@ -155,7 +181,7 @@ public class BTree<T extends Comparable<T>> {
             parent.addChild(left);
             parent.addChild(right);
 
-            if (parent.numberOfKeys() > maxKeySize) split(parent);
+            if (parent.numberOfKeys() > maxKeySize) split(parent); //Delete this if our implementation is 1-pass
         }
     }
 
@@ -575,9 +601,9 @@ public class BTree<T extends Comparable<T>> {
 
         private Node(Node<T> parent, int maxKeySize, int maxChildrenSize) {
             this.parent = parent;
-            this.keys = (T[]) new Comparable[maxKeySize + 1];
+            this.keys = (T[]) new Comparable[maxKeySize + 1]; // maybe [maxKeySize] only   ??????????????????????
             this.keysSize = 0;
-            this.children = new Node[maxChildrenSize + 1];
+            this.children = new Node[maxChildrenSize + 1]; // maybe [maxChildrenSize] only  ??????????????????????
             this.childrenSize = 0;
         }
 
