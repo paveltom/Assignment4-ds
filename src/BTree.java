@@ -62,12 +62,19 @@ public class BTree<T extends Comparable<T>> {
         int i = curr.keysSize-1;
 
         if (curr.childrenSize == 0) { //in case 'curr' is a leaf
-            while (i >= 0 && value.compareTo(curr.getKey(i)) < 0) { // sign '=' removed from the second condition
-                curr.keys[i + 1] = curr.keys[i];
-                i--;
+            if (curr.keysSize == maxKeySize){
+                Node<T> tempNode = curr.parent;
+                this.split(curr);
+                this.insertNonFull(tempNode, value);
             }
-            curr.keys[i + 1] = value;
-            curr.keysSize = curr.keysSize + 1; //manual update of the field
+            else {
+                while (i >= 0 && value.compareTo(curr.getKey(i)) < 0) { // sign '=' removed from the second condition
+                    curr.keys[i + 1] = curr.keys[i];
+                    i--;
+                }
+                curr.keys[i + 1] = value;
+                curr.keysSize = curr.keysSize + 1; //manual update of the field
+            }
         }
 
         else { //in case 'curr' is an inner node
