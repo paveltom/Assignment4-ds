@@ -30,12 +30,18 @@ public class StringHashMethods implements HashMethods
     }
 
     public static void main(String[] args) {
-        BTree<Integer> btree = new BTree<>(3);
+        BTree<Integer> btree = new BTree<>(2);
         btree.insert(10);
         btree.insert(25);
         btree.insert(40);
         btree.insert(60);
-        btree.toString();
+        btree.insert(15);
+        btree.insert(20);
+        btree.insert(30);
+        btree.insert(35);
+
+
+        System.out.println(btree.toString());
 
 
     }

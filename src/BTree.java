@@ -27,9 +27,9 @@ public class BTree<T extends Comparable<T>> {
      */
     public BTree(int order) {
         this.minKeySize = order-1; //changed: '-1' added
-        this.minChildrenSize = minKeySize + 1;
-        this.maxKeySize = (2 * minKeySize)-1; //changed: '-1' added
-        this.maxChildrenSize = maxKeySize + 1;
+        this.minChildrenSize = order;
+        this.maxKeySize = (2 * order)-1; //changed: '-1' added
+        this.maxChildrenSize = 2 * order;
     }
 
 
@@ -43,12 +43,12 @@ public class BTree<T extends Comparable<T>> {
         else{
             Node<T> tempRoot = this.root; //a temporal node which receives a nodes on the path
 
-            if (tempRoot.childrenSize == this.maxChildrenSize) { //split curr
-                Node<T> newRoot = new Node<T>(null, this.maxKeySize, this.maxChildrenSize);
-                this.root = newRoot;
-                newRoot.addChild(tempRoot);
-                this.split(newRoot);
-                this.insertNonFull(newRoot, value);
+            if (tempRoot.keysSize == this.maxKeySize) { //split curr
+//                Node<T> newRoot = new Node<T>(null, this.maxKeySize, this.maxChildrenSize);
+//                this.root = newRoot;
+//                newRoot.addChild(tempRoot);
+                this.split(tempRoot);
+                this.insertNonFull(this.root, value);
             }
 
             else this.insertNonFull(tempRoot, value);
@@ -59,7 +59,7 @@ public class BTree<T extends Comparable<T>> {
     private void insertNonFull(Node<T> curr ,T value) {
         if (curr == null) return;
 
-        int i = curr.keysSize;
+        int i = curr.keysSize-1;
 
         if (curr.childrenSize == 0) { //in case 'curr' is a leaf
             while (i >= 0 && value.compareTo(curr.getKey(i)) < 0) { // sign '=' removed from the second condition
@@ -67,7 +67,7 @@ public class BTree<T extends Comparable<T>> {
                 i--;
             }
             curr.keys[i + 1] = value;
-            curr.keysSize++; //manual update of the field
+            curr.keysSize = curr.keysSize + 1; //manual update of the field
         }
 
         else { //in case 'curr' is an inner node
@@ -160,7 +160,7 @@ public class BTree<T extends Comparable<T>> {
      * @param nodeToSplit
      *            to split.
      */
-    private void split(Node<T> nodeToSplit) {
+    private void split(Node<T> nodeToSplit) { //changed
         Node<T> node = nodeToSplit;
         int numberOfKeys = node.numberOfKeys();
         int medianIndex = numberOfKeys / 2;
@@ -621,9 +621,9 @@ public class BTree<T extends Comparable<T>> {
 
         private Node(Node<T> parent, int maxKeySize, int maxChildrenSize) {
             this.parent = parent;
-            this.keys = (T[]) new Comparable[maxKeySize + 1]; // maybe [maxKeySize] only   ??????????????????????
+            this.keys = (T[]) new Comparable[maxKeySize+1]; // maybe [maxKeySize] only   ??????????????????????
             this.keysSize = 0;
-            this.children = new Node[maxChildrenSize + 1]; // maybe [maxChildrenSize] only  ??????????????????????
+            this.children = new Node[maxChildrenSize+1]; // maybe [maxChildrenSize] only  ??????????????????????
             this.childrenSize = 0;
         }
 
