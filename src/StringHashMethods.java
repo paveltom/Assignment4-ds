@@ -28,4 +28,15 @@ public class StringHashMethods implements HashMethods
 
         return hashVal;
     }
+
+    public static void main(String[] args) {
+        BTree<Integer> btree = new BTree<>(3);
+        btree.insert(10);
+        btree.insert(25);
+        btree.insert(40);
+        btree.insert(60);
+        btree.toString();
+
+
+    }
 }

@@ -35,32 +35,56 @@ public class BTree<T extends Comparable<T>> {
 
     //Task 2.1
     public boolean insert(T value) {
-        //if root == null: create a new root and insert the value into it
-
-        if (root == null) {
+        if (root == null) { //in case the tree is empty
             root = new Node<T>(null, maxKeySize, maxChildrenSize);
             root.addKey(value);
         }
 
         else{
-            Node<T> curr = this.root;
-            if (curr.childrenSize == this.maxChildrenSize) throw new UnsupportedOperationException(); //delete break
+            Node<T> tempRoot = this.root; //a temporal node which receives a nodes on the path
 
+            if (tempRoot.childrenSize == this.maxChildrenSize) { //split curr
+                Node<T> newRoot = new Node<T>(null, this.maxKeySize, this.maxChildrenSize);
+                this.root = newRoot;
+                newRoot.addChild(tempRoot);
+                this.split(newRoot);
+                this.insertNonFull(newRoot, value);
+            }
+
+            else this.insertNonFull(tempRoot, value);
         }
-
-
-
-        //else: create a new node that firstly will receive a root
-        // then enter an while loop and go through the tree
-        // every node the while loop meets has to be splat if it is full
-        // while function runs until it reaches a leaf to insert the value
-
-
-		return false;
+		return true;
     }
 
-    private void insertNonFull(T value) {
+    private void insertNonFull(Node<T> curr ,T value) {
+        if (curr == null) return;
 
+        int i = curr.keysSize;
+
+        if (curr.childrenSize == 0) { //in case 'curr' is a leaf
+            while (i >= 0 && value.compareTo(curr.getKey(i)) < 0) { // sign '=' removed from the second condition
+                curr.keys[i + 1] = curr.keys[i];
+                i--;
+            }
+            curr.keys[i + 1] = value;
+            curr.keysSize++; //manual update of the field
+        }
+
+        else { //in case 'curr' is an inner node
+            while (i >= 0 && value.compareTo(curr.keys[i]) <= 0)
+                i--; //finding the index of the node which is smaller thant 'curr'
+
+            i++; //the index to insert 'curr'
+            Node<T> tempCurrChild = curr.getChild(i);
+
+            if (tempCurrChild != null && tempCurrChild.childrenSize == this.maxChildrenSize) {
+                this.split(tempCurrChild);
+                if (value.compareTo(curr.getKey(i)) > 0)
+                    i++; //in case the splat child inserted a key into its parent keys[] that is smaller than 'value'
+            }
+
+            this.insertNonFull(curr.getChild(i), value);
+        }
     }
 
 
@@ -168,11 +192,9 @@ public class BTree<T extends Comparable<T>> {
             // new root, height of tree is increased
             Node<T> newRoot = new Node<T>(null, maxKeySize, maxChildrenSize);
             newRoot.addKey(medianValue);
-            node.parent = newRoot; //??????????????????????????????????????????????????????????
-            root = newRoot;
-            node = root; //????????????????????????????????????
-            node.addChild(left);
-            node.addChild(right);
+            this.root = newRoot;
+            newRoot.addChild(left);
+            newRoot.addChild(right);
         } else {
             // Move the median value up to the parent
             Node<T> parent = node.parent;
@@ -180,8 +202,6 @@ public class BTree<T extends Comparable<T>> {
             parent.removeChild(node);
             parent.addChild(left);
             parent.addChild(right);
-
-            if (parent.numberOfKeys() > maxKeySize) split(parent); //Delete this if our implementation is 1-pass
         }
     }
 
