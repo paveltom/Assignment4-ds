@@ -45,6 +45,10 @@ public class StringHashMethods implements HashMethods
         btree.insert(5);
         btree.insert(65);
         btree.insert(2);
+        btree.delete(17);
+        btree.delete(35);
+
+
 
 //        btree.insert(35);
 //        btree.insert(35);

@@ -96,9 +96,66 @@ public class BTree<T extends Comparable<T>> {
 
 
     public T delete(T value) {
-    	// TODO: implement your code here
+        Node<T> toDelete = this.getNode(value);
+        if(toDelete==null) return null;
+//        in case toDeleteNode is a leaf:
+//                 if(toDeleteNode.numOfKeys > minNumOfKeys){ toDeleteNode.removeKey}
+        if(toDelete.childrenSize == 0) {
+            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
+            else removeFromBro(toDelete, value);
+        }
+
+
+
+
+
+
+
+        /*
+
+           else {
+                 1. boolean pullFromBro (toDeleteNode, value)
+                     if(leftBro.numOfKeys > minNumOfKeys) { pullFromBro (toDeleteNode, leftBro) }
+                     else {if (leftBro.numOfKeys > minNumOfKeys)}
+
+           * in case both bros are minimal - merge with a separation node and delete the wanted value
+
+
+
+
+
+        in case toDeleteNode is a root:
+
+        in case toDeleteNode is an inner node:
+         */
 		return null;
     }
+
+    private boolean removeFromBro(Node<T> toDelete, T value){
+        Node<T> parent = toDelete.parent;
+        Node<T> broNode;
+        int i = 0;
+        while (!parent.children[i].equals(toDelete)) i++;
+        if(i > 0 && parent.children[i-1].numberOfKeys() > this.minKeySize){ //remove from left bro
+            broNode = parent.children[i-1];
+            toDelete.addKey(parent.keys[i-1]);
+            int broLength = broNode.keysSize;
+            parent.keys[i-1] = broNode.keys[broLength-1];
+            broNode.removeKey(broLength-1);
+            toDelete.removeKey(value);
+            return true;
+        }
+        else if(i < (parent.children.length-1) && parent.children[i+1].numberOfKeys() > this.minKeySize){
+            broNode = parent.children[i+1];
+            toDelete.addKey(parent.keys[i]);
+            parent.keys[i] = broNode.keys[0];
+            broNode.removeKey(0);
+            toDelete.removeKey(value);
+            return true;
+        }
+        return false;
+    }
+
     
 	//Task 2.2
     public boolean insert2pass(T value) {
