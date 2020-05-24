@@ -95,15 +95,20 @@ public class BTree<T extends Comparable<T>> {
     }
 
 
-    public T delete(T value) {
+    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Node<T> toDelete = this.getNode(value);
+
+
+
         if(toDelete==null) return null;
-//        in case toDeleteNode is a leaf:
-//                 if(toDeleteNode.numOfKeys > minNumOfKeys){ toDeleteNode.removeKey}
-        if(toDelete.childrenSize == 0) {
+        if(toDelete.childrenSize == 0) { // in case toDelete is a leaf
             if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
-            else removeFromBro(toDelete, value);
+            else if(removeFromBro(toDelete)) toDelete.removeKey(value);
+                else merge(toDelete); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return value;
         }
+
+
 
 
 
@@ -131,7 +136,29 @@ public class BTree<T extends Comparable<T>> {
 		return null;
     }
 
-    private boolean removeFromBro(Node<T> toDelete, T value){
+    private void merge(Node<T> toDelete){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    }
+
+    private Node<T> Search(Node<T> curr, T value){// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // consider the case if the root and its children don't have enough keys!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        int i = 0;
+        while (i < curr.numberOfKeys() && (value.compareTo(curr.keys[i])>0)) i++;
+        if ((value.compareTo(curr.keys[i]) == 0)) return curr;
+        if (curr.childrenSize == 0) return null;
+        else {
+            if (curr.children[i].numberOfKeys() == this.minKeySize) return Search(increaseNumOfKeys(curr.children[i]), value);
+            else return Search(curr.children[i], value);
+        }
+    }
+
+    private Node<T> increaseNumOfKeys(Node<T> toIncrease){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if (removeFromBro(toIncrease)) return toIncrease;
+        merge(toIncrease);
+        return toIncrease;
+    }
+
+    private boolean removeFromBro(Node<T> toDelete){
         Node<T> parent = toDelete.parent;
         Node<T> broNode;
         int i = 0;
@@ -142,15 +169,13 @@ public class BTree<T extends Comparable<T>> {
             int broLength = broNode.keysSize;
             parent.keys[i-1] = broNode.keys[broLength-1];
             broNode.removeKey(broLength-1);
-            toDelete.removeKey(value);
             return true;
         }
-        else if(i < (parent.children.length-1) && parent.children[i+1].numberOfKeys() > this.minKeySize){
+        else if(i < (parent.children.length-1) && parent.children[i+1].numberOfKeys() > this.minKeySize){ //remove from right bro
             broNode = parent.children[i+1];
             toDelete.addKey(parent.keys[i]);
             parent.keys[i] = broNode.keys[0];
             broNode.removeKey(0);
-            toDelete.removeKey(value);
             return true;
         }
         return false;
