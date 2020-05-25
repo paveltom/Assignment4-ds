@@ -96,15 +96,41 @@ public class BTree<T extends Comparable<T>> {
 
 
     public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Node<T> toDelete = this.getNode(value);
+        Object[] searchResult = this.Search(this.root, value);
+        if (searchResult == null || searchResult[0] == null) return null;
+        Node<T> toDelete = (Node<T>)searchResult[0];
+        int i = (int)searchResult[1]; //index of toDelete in its parent.children array
 
+        if (toDelete.parent == null){ //in case of root
 
+            // add case the root is of size 1
 
-        if(toDelete==null) return null;
+            if (toDelete.childrenSize == 0){
+                toDelete.removeKey(value);
+            }
+            else {
+                if (toDelete.children[i].keysSize > this.minKeySize){
+                    if(toDelete.children[i].childrenSize == 0) toDelete.keys[i] = toDelete.children[i].removeKey(toDelete.children[i].childrenSize-1);
+                    // else - child is not a leaf
+                }
+                else if(toDelete.children[i + 1].keysSize > this.minKeySize) {
+                    if (toDelete.children[i+1].childrenSize == 0) toDelete.keys[i] = toDelete.children[i + 1].removeKey(0);
+                    // else - child is not a leaf
+                }
+                else {
+                    // merging of two childs and removing th evalue from todelete
+                }
+            }
+
+        }
+
         if(toDelete.childrenSize == 0) { // in case toDelete is a leaf
             if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
             else if(removeFromBro(toDelete)) toDelete.removeKey(value);
-                else merge(toDelete); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                else {
+                toDelete = merge(toDelete, i); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                toDelete.removeKey(value);
+                 }
             return value;
         }
 
@@ -136,26 +162,42 @@ public class BTree<T extends Comparable<T>> {
 		return null;
     }
 
-    private void merge(Node<T> toDelete){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+    private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Node<T> bro;
+        if (indexInParent > 0){ // in case of merge with left brother
+            bro = toDelete.parent.children[indexInParent-1]; //left brother
+            bro.addKey(bro.parent.removeKey(indexInParent-1)); //left brother receives the value of medial parent
+            for (int i = 0; i < toDelete.keysSize; i++)
+                bro.addKey(toDelete.keys[i]); //left brother receives the values of toDelete
+            bro.parent.removeChild(toDelete); //toDelete is removed
+            return bro;
+        }
+        else if(indexInParent < (toDelete.parent.children.length-1)){ // in case of merge with right brother
+            bro = toDelete.parent.children[indexInParent+1];
+            toDelete.addKey(bro.parent.removeKey(indexInParent)); //toDelete receives the value of medial parent
+            for (int i = 0; i < bro.keysSize; i++)
+                toDelete.addKey(bro.keys[i]); //toDelete receives the values of left brother
+            toDelete.parent.removeChild(bro); //left brother is removed
+            return toDelete;
+        }
+        return toDelete;
     }
 
-    private Node<T> Search(Node<T> curr, T value){// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private Object[] Search(Node<T> curr, T value){// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // consider the case if the root and its children don't have enough keys!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         int i = 0;
         while (i < curr.numberOfKeys() && (value.compareTo(curr.keys[i])>0)) i++;
-        if ((value.compareTo(curr.keys[i]) == 0)) return curr;
+        if (value.equals(curr.keys[i])) return new Object[]{curr, i};
         if (curr.childrenSize == 0) return null;
         else {
-            if (curr.children[i].numberOfKeys() == this.minKeySize) return Search(increaseNumOfKeys(curr.children[i]), value);
+            if (curr.children[i].numberOfKeys() == this.minKeySize) return Search(increaseNumOfKeys(curr.children[i], i), value);
             else return Search(curr.children[i], value);
         }
     }
 
-    private Node<T> increaseNumOfKeys(Node<T> toIncrease){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private Node<T> increaseNumOfKeys(Node<T> toIncrease, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (removeFromBro(toIncrease)) return toIncrease;
-        merge(toIncrease);
-        return toIncrease;
+        return merge(toIncrease, indexInParent);
     }
 
     private boolean removeFromBro(Node<T> toDelete){
