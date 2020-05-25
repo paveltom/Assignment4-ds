@@ -119,6 +119,10 @@ public class BTree<T extends Comparable<T>> {
                 }
                 else {
                     // merging of two childs and removing th evalue from todelete
+                    Node<T> merged = toDelete.children[i];
+                    for (int k = 0; k < toDelete.children[i+1].keysSize; k++) merged.addKey(toDelete.children[i+1].keys[k]);
+                    toDelete.removeChild(i+1);
+                    toDelete.removeKey(i);
                 }
             }
 
