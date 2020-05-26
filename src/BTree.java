@@ -104,6 +104,16 @@ public class BTree<T extends Comparable<T>> {
         if (toDelete.parent == null){ //in case of root
 
             // add case the root is of size 1
+            if (toDelete.keysSize == 1 && toDelete.childrenSize > 0){
+
+
+                //if both childs are minimal
+
+                //if one of the childs is not minimal
+
+                //consider childs could have childs
+            }
+
 
             if (toDelete.childrenSize == 0){
                 toDelete.removeKey(value);
@@ -118,7 +128,7 @@ public class BTree<T extends Comparable<T>> {
                     // else - child is not a leaf
                 }
                 else {
-                    // merging of two childs and removing th evalue from todelete
+                    // merging of two childs and removing the value from todelete
                     Node<T> merged = toDelete.children[i];
                     for (int k = 0; k < toDelete.children[i+1].keysSize; k++) merged.addKey(toDelete.children[i+1].keys[k]);
                     toDelete.removeChild(i+1);
