@@ -16,19 +16,19 @@ public class BTree<T extends Comparable<T>> {
     /**
      * Constructor for B-Tree which defaults to a 2-3 B-Tree.
      */
-    public BTree() { }
+    public BTree() {
+    }
 
     /**
-     * Constructor for B-Tree of ordered parameter. Order here means minimum 
-     * number of keys in a non-root node. 
-     * 
-     * @param order
-     *            of the B-Tree.
+     * Constructor for B-Tree of ordered parameter. Order here means minimum
+     * number of keys in a non-root node.
+     *
+     * @param order of the B-Tree.
      */
     public BTree(int order) {
-        this.minKeySize = order-1; //changed: '-1' added
+        this.minKeySize = order - 1; //changed: '-1' added
         this.minChildrenSize = order;
-        this.maxKeySize = (2 * order)-1; //changed: '-1' added
+        this.maxKeySize = (2 * order) - 1; //changed: '-1' added
         this.maxChildrenSize = 2 * order;
     }
 
@@ -38,9 +38,7 @@ public class BTree<T extends Comparable<T>> {
         if (root == null) { //in case the tree is empty
             root = new Node<T>(null, maxKeySize, maxChildrenSize);
             root.addKey(value);
-        }
-
-        else{
+        } else {
             Node<T> tempRoot = this.root; //a temporal node which receives a nodes on the path
 
             if (tempRoot.keysSize == this.maxKeySize) { //split curr
@@ -49,25 +47,22 @@ public class BTree<T extends Comparable<T>> {
 //                newRoot.addChild(tempRoot);
                 this.split(tempRoot);
                 this.insertNonFull(this.root, value);
-            }
-
-            else this.insertNonFull(tempRoot, value);
+            } else this.insertNonFull(tempRoot, value);
         }
-		return true;
+        return true;
     }
 
-    private void insertNonFull(Node<T> curr ,T value) {
+    private void insertNonFull(Node<T> curr, T value) {
         if (curr == null) return;
 
-        int i = curr.keysSize-1;
+        int i = curr.keysSize - 1;
 
         if (curr.childrenSize == 0) { //in case 'curr' is a leaf
-            if (curr.keysSize == maxKeySize){
+            if (curr.keysSize == maxKeySize) {
                 Node<T> tempNode = curr.parent;
                 this.split(curr);
                 this.insertNonFull(tempNode, value);
-            }
-            else {
+            } else {
                 while (i >= 0 && value.compareTo(curr.getKey(i)) < 0) { // sign '=' removed from the second condition
                     curr.keys[i + 1] = curr.keys[i];
                     i--;
@@ -75,9 +70,7 @@ public class BTree<T extends Comparable<T>> {
                 curr.keys[i + 1] = value;
                 curr.keysSize = curr.keysSize + 1; //manual update of the field
             }
-        }
-
-        else { //in case 'curr' is an inner node
+        } else { //in case 'curr' is an inner node
             while (i >= 0 && value.compareTo(curr.keys[i]) <= 0)
                 i--; //finding the index of the node which is smaller thant 'curr'
 
@@ -95,91 +88,95 @@ public class BTree<T extends Comparable<T>> {
     }
 
 
-    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Object[] searchResult = this.Search(this.root, value);
-        if (searchResult == null || searchResult[0] == null) return null;
-        Node<T> toDelete = (Node<T>)searchResult[0];
-        int i = (int)searchResult[1]; //index of toDelete in its parent.children array
+//    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        Object[] searchResult = this.Search(this.root, value);
+//        if (searchResult == null || searchResult[0] == null) return null;
+//        Node<T> toDelete = (Node<T>)searchResult[0];
+//        int i = (int)searchResult[1]; //index of toDelete in its parent.children array
+//
+//        if (toDelete.parent == null){ //in case of root
+//
+//            // add case the root is of size 1
+//            if (toDelete.keysSize == 1 && toDelete.childrenSize > 0){
+//
+//
+//                //if both childs are minimal
+//
+//                //if one of the childs is not minimal
+//
+//                //consider childs could have childs
+//            }
+//
+//
+//            if (toDelete.childrenSize == 0){
+//                toDelete.removeKey(value);
+//            }
+//            else {
+//                if (toDelete.children[i].keysSize > this.minKeySize){
+//                    if(toDelete.children[i].childrenSize == 0) toDelete.keys[i] = toDelete.children[i].removeKey(toDelete.children[i].childrenSize-1);
+//                    // else - child is not a leaf
+//                }
+//                else if(toDelete.children[i + 1].keysSize > this.minKeySize) {
+//                    if (toDelete.children[i+1].childrenSize == 0) toDelete.keys[i] = toDelete.children[i + 1].removeKey(0);
+//                    // else - child is not a leaf
+//                }
+//                else {
+//                    // merging of two childs and removing the value from todelete
+//                    Node<T> merged = toDelete.children[i];
+//                    for (int k = 0; k < toDelete.children[i+1].keysSize; k++) merged.addKey(toDelete.children[i+1].keys[k]);
+//                    toDelete.removeChild(i+1);
+//                    toDelete.removeKey(i);
+//                }
+//            }
+//
+//        }
+//
+//        if(toDelete.childrenSize == 0) { // in case toDelete is a leaf
+//            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
+//            else if(removeFromBro(toDelete)) toDelete.removeKey(value);
+//                else {
+//                toDelete = merge(toDelete, i); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//                toDelete.removeKey(value);
+//                 }
+//            return value;
+//        }
+//		return null;
+//    }
 
-        if (toDelete.parent == null){ //in case of root
 
-            // add case the root is of size 1
-            if (toDelete.keysSize == 1 && toDelete.childrenSize > 0){
+    public T delete(T value) {
+        Node<T> toDelete = this.getNode(value);
+        //if toDelete is a root
 
-
-                //if both childs are minimal
-
-                //if one of the childs is not minimal
-
-                //consider childs could have childs
-            }
-
-
-            if (toDelete.childrenSize == 0){
-                toDelete.removeKey(value);
-            }
-            else {
-                if (toDelete.children[i].keysSize > this.minKeySize){
-                    if(toDelete.children[i].childrenSize == 0) toDelete.keys[i] = toDelete.children[i].removeKey(toDelete.children[i].childrenSize-1);
-                    // else - child is not a leaf
-                }
-                else if(toDelete.children[i + 1].keysSize > this.minKeySize) {
-                    if (toDelete.children[i+1].childrenSize == 0) toDelete.keys[i] = toDelete.children[i + 1].removeKey(0);
-                    // else - child is not a leaf
-                }
-                else {
-                    // merging of two childs and removing the value from todelete
-                    Node<T> merged = toDelete.children[i];
-                    for (int k = 0; k < toDelete.children[i+1].keysSize; k++) merged.addKey(toDelete.children[i+1].keys[k]);
-                    toDelete.removeChild(i+1);
-                    toDelete.removeKey(i);
-                }
-            }
-
-        }
-
-        if(toDelete.childrenSize == 0) { // in case toDelete is a leaf
+        if (toDelete.childrenSize == 0) { // in case toDelete is a leaf
             if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
-            else if(removeFromBro(toDelete)) toDelete.removeKey(value);
-                else {
-                toDelete = merge(toDelete, i); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            else {
+
+                this.combined(toDelete);
                 toDelete.removeKey(value);
-                 }
+            }
+
             return value;
+
+            // in case the deleted node is an inner node: take the pred and made combined to its original node. if pred original node is mininimal - go to successor
+            // if both successor and pred are minimal - downMerge
         }
+        return value;
+    }
 
-
-
-
-
-
-
-
-
-        /*
-
-           else {
-                 1. boolean pullFromBro (toDeleteNode, value)
-                     if(leftBro.numOfKeys > minNumOfKeys) { pullFromBro (toDeleteNode, leftBro) }
-                     else {if (leftBro.numOfKeys > minNumOfKeys)}
-
-           * in case both bros are minimal - merge with a separation node and delete the wanted value
-
-
-
-
-
-        in case toDeleteNode is a root:
-
-        in case toDeleteNode is an inner node:
-         */
-		return null;
+    private void downMerge(Node<T> source, T value) {
+        int indexOfLeftChild = source.indexOf(value);
+        Node<T> leftChild = source.getChild(indexOfLeftChild);
+        Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
+        leftChild.addKey(source.removeKey(indexOfLeftChild));
+        for (int i = 0; i < rightBro.keysSize; i++) leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
+        source.removeChild(rightBro); //left brother is removed
     }
 
     private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Node<T> bro;
         if (indexInParent > 0){ // in case of merge with left brother
-            bro = toDelete.parent.children[indexInParent-1]; //left brother
+            bro = toDelete.parent.children[indexInParent-1]; // getChild(toDelete.parent.indexOf(toDelete)-1); //left brother
             bro.addKey(bro.parent.removeKey(indexInParent-1)); //left brother receives the value of medial parent
             for (int i = 0; i < toDelete.keysSize; i++)
                 bro.addKey(toDelete.keys[i]); //left brother receives the values of toDelete
@@ -513,57 +510,59 @@ public class BTree<T extends Comparable<T>> {
         int indexOfLeftNeighbor = index - 1;
         int indexOfRightNeighbor = index + 1;
 
-        Node<T> rightNeighbor = null;
-        int rightNeighborSize = -minChildrenSize;
-        if (indexOfRightNeighbor < parent.numberOfChildren()) {
-            rightNeighbor = parent.getChild(indexOfRightNeighbor);
-            rightNeighborSize = rightNeighbor.numberOfKeys();
+        Node<T> leftNeighbor = null;
+        int leftNeighborSize = -minChildrenSize;
+        if (indexOfLeftNeighbor >= 0) {
+            leftNeighbor = parent.getChild(indexOfLeftNeighbor);
+            leftNeighborSize = leftNeighbor.numberOfKeys();
         }
 
         // Try to borrow neighbor
-        if (rightNeighbor != null && rightNeighborSize > minKeySize) {
-            // Try to borrow from right neighbor
-            T removeValue = rightNeighbor.getKey(0);
-            int prev = getIndexOfPreviousValue(parent, removeValue);
+        if (leftNeighbor != null && leftNeighborSize > minKeySize) {
+            // Try to borrow from left neighbor
+            T removeValue = leftNeighbor.getKey(leftNeighborSize-1);
+            int prev = getIndexOfPreviousValue(parent, removeValue) + 1;
+            if (parent.keysSize == 1) prev = 0;
             T parentValue = parent.removeKey(prev);
-            T neighborValue = rightNeighbor.removeKey(0);
+            T neighborValue = leftNeighbor.removeKey(leftNeighborSize-1);
             node.addKey(parentValue);
             parent.addKey(neighborValue);
-            if (rightNeighbor.numberOfChildren() > 0) {
-                node.addChild(rightNeighbor.removeChild(0));
+            if (leftNeighbor.numberOfChildren() > 0) {
+                node.addChild(leftNeighbor.removeChild(leftNeighbor.numberOfChildren() - 1));
             }
         } else {
-            Node<T> leftNeighbor = null;
-            int leftNeighborSize = -minChildrenSize;
-            if (indexOfLeftNeighbor >= 0) {
-                leftNeighbor = parent.getChild(indexOfLeftNeighbor);
-                leftNeighborSize = leftNeighbor.numberOfKeys();
+            Node<T> rightNeighbor = null;
+            int rightNeighborSize = -minChildrenSize;
+            if (indexOfRightNeighbor < parent.numberOfChildren()) {
+                rightNeighbor = parent.getChild(indexOfRightNeighbor);
+                rightNeighborSize = rightNeighbor.numberOfKeys();
             }
 
-            if (leftNeighbor != null && leftNeighborSize > minKeySize) {
-                // Try to borrow from left neighbor
-                T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
+            if (rightNeighbor != null && rightNeighborSize > minKeySize) {
+                // Try to borrow from right neighbor
+                T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfNextValue(parent, removeValue);
                 T parentValue = parent.removeKey(prev);
-                T neighborValue = leftNeighbor.removeKey(leftNeighbor.numberOfKeys() - 1);
+                T neighborValue = rightNeighbor.removeKey(0);
                 node.addKey(parentValue);
                 parent.addKey(neighborValue);
-                if (leftNeighbor.numberOfChildren() > 0) {
-                    node.addChild(leftNeighbor.removeChild(leftNeighbor.numberOfChildren() - 1));
+                if (rightNeighbor.numberOfChildren() > 0) {
+                    node.addChild(rightNeighbor.removeChild(0));
                 }
-            } else if (rightNeighbor != null && parent.numberOfKeys() > 0) {
-                // Can't borrow from neighbors, try to combined with right neighbor
-                T removeValue = rightNeighbor.getKey(0);
-                int prev = getIndexOfPreviousValue(parent, removeValue);
+            } else if (leftNeighbor != null && parent.numberOfKeys() > 0) {
+                // Can't borrow from neighbors, try to combined with left neighbor
+                T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys()-1);
+                int prev = getIndexOfPreviousValue(parent, removeValue) + 1;
+                if (parent.keysSize == 1) prev = 0;
                 T parentValue = parent.removeKey(prev);
-                parent.removeChild(rightNeighbor);
+                parent.removeChild(leftNeighbor);
                 node.addKey(parentValue);
-                for (int i = 0; i < rightNeighbor.keysSize; i++) {
-                    T v = rightNeighbor.getKey(i);
+                for (int i = 0; i < leftNeighbor.keysSize; i++) {
+                    T v = leftNeighbor.getKey(i);
                     node.addKey(v);
                 }
-                for (int i = 0; i < rightNeighbor.childrenSize; i++) {
-                    Node<T> c = rightNeighbor.getChild(i);
+                for (int i = 0; i < leftNeighbor.childrenSize; i++) {
+                    Node<T> c = leftNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
@@ -576,19 +575,19 @@ public class BTree<T extends Comparable<T>> {
                     node.parent = null;
                     root = node;
                 }
-            } else if (leftNeighbor != null && parent.numberOfKeys() > 0) {
-                // Can't borrow from neighbors, try to combined with left neighbor
-                T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
+            } else if (rightNeighbor != null && parent.numberOfKeys() > 0) {
+                // Can't borrow from neighbors, try to combined with right neighbor
+                T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfNextValue(parent, removeValue);
                 T parentValue = parent.removeKey(prev);
-                parent.removeChild(leftNeighbor);
+                parent.removeChild(rightNeighbor);
                 node.addKey(parentValue);
-                for (int i = 0; i < leftNeighbor.keysSize; i++) {
-                    T v = leftNeighbor.getKey(i);
+                for (int i = 0; i < rightNeighbor.keysSize; i++) {
+                    T v = rightNeighbor.getKey(i);
                     node.addKey(v);
                 }
-                for (int i = 0; i < leftNeighbor.childrenSize; i++) {
-                    Node<T> c = leftNeighbor.getChild(i);
+                for (int i = 0; i < rightNeighbor.childrenSize; i++) {
+                    Node<T> c = rightNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
