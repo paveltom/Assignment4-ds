@@ -151,15 +151,15 @@ public class BTree<T extends Comparable<T>> {
         if (toDelete.childrenSize == 0) { // in case toDelete is a leaf
             if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
             else {
-
                 this.combined(toDelete);
                 toDelete.removeKey(value);
             }
-
             return value;
 
-            // in case the deleted node is an inner node: take the pred and made combined to its original node. if pred original node is mininimal - go to successor
-            // if both successor and pred are minimal - downMerge
+            //case 1: toDelete has a pred or as succ
+
+            //case 2: toDelete does not have presd/succ => downmerge (not importanyt if toDelete is a root or an inner node)
+            //case 2.1: toDelete is a root with only 1 key (the value to remove) => merge its 2 childs and point this.root to them
         }
         return value;
     }
