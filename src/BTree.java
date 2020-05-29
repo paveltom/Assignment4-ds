@@ -121,6 +121,7 @@ public class BTree<T extends Comparable<T>> {
                 }
             }
         }
+
         downMerge(toDelete,value);
 
 
