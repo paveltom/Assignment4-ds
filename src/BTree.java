@@ -177,6 +177,8 @@ public class BTree<T extends Comparable<T>> {
                 }
             }
         }
+        downMerge(toDelete,value);
+
 
 
 
@@ -224,14 +226,19 @@ public class BTree<T extends Comparable<T>> {
      */
 
     private void downMerge(Node<T> source, T value) {
-
-        int indexOfLeftChild = source.indexOf(value);
-        Node<T> leftChild = source.getChild(indexOfLeftChild);
-        Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
-        leftChild.addKey(source.removeKey(indexOfLeftChild));
-        for (int i = 0; i < rightBro.keysSize; i++) leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
-        source.removeChild(rightBro); //right brother is removed
-
+        if(source.childrenSize==0)
+            source.removeKey(value);
+        else {
+            int indexOfLeftChild = source.indexOf(value);
+            Node<T> leftChild = source.getChild(indexOfLeftChild);
+            Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
+            leftChild.addKey(source.removeKey(indexOfLeftChild));
+            for (int i = 0; i < rightBro.keysSize; i++)
+                leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
+            source.removeChild(rightBro); //right brother is removed
+            source.removeKey(value);
+            downMerge(leftChild, value);
+        }
     }
 
     private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
