@@ -164,19 +164,20 @@ public class BTree<T extends Comparable<T>> {
         if (toDelete.getChild(toDelete.indexOf(value)).keysSize == this.minKeySize && toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == this.minKeySize) {
             Node<T> pred = this.predecessor(toDelete.getChild(toDelete.indexOf(value)));
             Node<T> succ;
-            if (pred.keysSize == this.minKeySize) {
+            if (pred.keysSize > this.minKeySize || removeFromBro(pred)) {
+                toDelete.addKey(pred.removeKey(0));
+                toDelete.removeKey(value);
+                return value;
+            } else {
                 succ = this.successor(toDelete.getChild(toDelete.indexOf(value) + 1));
-                if (succ.keysSize > minKeySize) {
+                if (succ.keysSize > minKeySize || removeFromBro(succ)) {
                     toDelete.addKey(succ.removeKey(0));
                     toDelete.removeKey(value);
                     return value;
                 }
-            } else {
-                toDelete.addKey(pred.removeKey(0));
-                toDelete.removeKey(value);
-                return value;
             }
         }
+        downMerge(toDelete,value);
 
 
 
@@ -225,14 +226,19 @@ public class BTree<T extends Comparable<T>> {
      */
 
     private void downMerge(Node<T> source, T value) {
-
-        int indexOfLeftChild = source.indexOf(value);
-        Node<T> leftChild = source.getChild(indexOfLeftChild);
-        Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
-        leftChild.addKey(source.removeKey(indexOfLeftChild));
-        for (int i = 0; i < rightBro.keysSize; i++) leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
-        source.removeChild(rightBro); //right brother is removed
-
+        if(source.childrenSize==0)
+            source.removeKey(value);
+        else {
+            int indexOfLeftChild = source.indexOf(value);
+            Node<T> leftChild = source.getChild(indexOfLeftChild);
+            Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
+            leftChild.addKey(source.removeKey(indexOfLeftChild));
+            for (int i = 0; i < rightBro.keysSize; i++)
+                leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
+            source.removeChild(rightBro); //right brother is removed
+            source.removeKey(value);
+            downMerge(leftChild, value);
+        }
     }
 
     private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
