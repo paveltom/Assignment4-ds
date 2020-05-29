@@ -39,19 +39,19 @@ public class StringHashMethods implements HashMethods
         btree.insert(20);
         btree.insert(30);
         btree.insert(35);
-        btree.delete(20);
-        btree.delete(35);
-        btree.delete(15);
-        btree.delete(25);
+//        btree.delete(20);
+//        btree.delete(15);
+//        btree.delete(25);
         btree.insert(45);
         btree.insert(55);
         btree.insert(17);
         btree.insert(5);
         btree.insert(65);
         btree.insert(2);
-        btree.delete(5);
-        btree.delete(65);
-        btree.delete(45);
+        btree.delete(35);
+  //      btree.delete(40);
+//        btree.delete(65);
+//        btree.delete(45);
 
 
 

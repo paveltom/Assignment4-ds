@@ -164,20 +164,19 @@ public class BTree<T extends Comparable<T>> {
         if (toDelete.getChild(toDelete.indexOf(value)).keysSize == this.minKeySize && toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == this.minKeySize) {
             Node<T> pred = this.predecessor(toDelete.getChild(toDelete.indexOf(value)));
             Node<T> succ;
-            if (pred.keysSize == this.minKeySize) {
+            if (pred.keysSize > this.minKeySize || removeFromBro(pred)) {
+                toDelete.addKey(pred.removeKey(0));
+                toDelete.removeKey(value);
+                return value;
+            } else {
                 succ = this.successor(toDelete.getChild(toDelete.indexOf(value) + 1));
-                if (succ.keysSize > minKeySize) {
+                if (succ.keysSize > minKeySize || removeFromBro(succ)) {
                     toDelete.addKey(succ.removeKey(0));
                     toDelete.removeKey(value);
                     return value;
                 }
-            } else {
-                toDelete.addKey(pred.removeKey(0));
-                toDelete.removeKey(value);
-                return value;
             }
         }
-
 
 
 
