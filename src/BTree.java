@@ -105,11 +105,10 @@ public class BTree<T extends Comparable<T>> {
         }
 
         //case 1: toDelete has a pred or as succ
-        if (toDelete.getChild(toDelete.indexOf(value)).keysSize == this.minKeySize && toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == this.minKeySize) {
             Node<T> pred = this.predecessor(toDelete.getChild(toDelete.indexOf(value)));
             Node<T> succ;
             if (pred.keysSize > this.minKeySize || removeFromBro(pred)) {
-                toDelete.addKey(pred.removeKey(0));
+                toDelete.addKey(pred.removeKey(pred.keysSize-1));
                 toDelete.removeKey(value);
                 return value;
             } else {
@@ -120,9 +119,9 @@ public class BTree<T extends Comparable<T>> {
                     return value;
                 }
             }
-        }
 
-        downMerge(toDelete,value);
+        if(toDelete.getChild(toDelete.indexOf(value)).keysSize==minKeySize&toDelete.getChild(toDelete.indexOf(value)+1).keysSize==minKeySize)
+            downMerge(toDelete,value);
 
 
 
