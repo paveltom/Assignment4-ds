@@ -88,7 +88,103 @@ public class BTree<T extends Comparable<T>> {
     }
 
 
-//    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public T delete(T value) {
+        Node<T> toDelete = this.getNode(value);
+        //if toDelete is a root
+
+        if (toDelete.childrenSize == 0) { // in case toDelete is a leaf
+            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
+            else {
+                this.combined(toDelete);
+                toDelete.removeKey(value);
+            }
+            return value;
+
+
+
+        }
+
+        //case 1: toDelete has a pred or as succ
+        if (toDelete.getChild(toDelete.indexOf(value)).keysSize == this.minKeySize && toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == this.minKeySize) {
+            Node<T> pred = this.predecessor(toDelete.getChild(toDelete.indexOf(value)));
+            Node<T> succ;
+            if (pred.keysSize > this.minKeySize || removeFromBro(pred)) {
+                toDelete.addKey(pred.removeKey(0));
+                toDelete.removeKey(value);
+                return value;
+            } else {
+                succ = this.successor(toDelete.getChild(toDelete.indexOf(value) + 1));
+                if (succ.keysSize > minKeySize || removeFromBro(succ)) {
+                    toDelete.addKey(succ.removeKey(0));
+                    toDelete.removeKey(value);
+                    return value;
+                }
+            }
+        }
+        downMerge(toDelete,value);
+
+
+
+
+        //case 2: toDelete does not have presd/succ => downmerge (not important if toDelete is a root or an inner node)
+
+        return value;
+    }
+
+    private void downMerge(Node<T> source, T value) {
+        if(source.childrenSize==0)
+            source.removeKey(value);
+        else {
+            int indexOfLeftChild = source.indexOf(value);
+            Node<T> leftChild = source.getChild(indexOfLeftChild);
+            Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
+            leftChild.addKey(source.removeKey(indexOfLeftChild));
+            for (int i = 0; i < rightBro.keysSize; i++)
+                leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
+            source.removeChild(rightBro); //right brother is removed
+            source.removeKey(value);
+            downMerge(leftChild, value);
+        }
+    }
+
+    private boolean removeFromBro(Node<T> toDelete){ //shifting action - trying to increase the number of keys by receiving left/right key
+        Node<T> parent = toDelete.parent;
+        Node<T> broNode;
+        int i = 0;
+        while (!parent.children[i].equals(toDelete)) i++; //getting the index of median-key in 'parent'
+        if(i > 0 && parent.children[i-1].numberOfKeys() > this.minKeySize){ //take from left bro if possible
+            broNode = parent.children[i-1];
+            toDelete.addKey(parent.keys[i-1]);
+            int broLength = broNode.keysSize;
+            parent.keys[i-1] = broNode.keys[broLength-1];
+            broNode.removeKey(broLength-1);
+            return true;
+        }
+        else if(i < (parent.children.length-1) && parent.children[i+1].numberOfKeys() > this.minKeySize){ //take from right bro if possible
+            broNode = parent.children[i+1];
+            toDelete.addKey(parent.keys[i]);
+            parent.keys[i] = broNode.keys[0];
+            broNode.removeKey(0);
+            return true;
+        }
+        return false;
+    }
+
+    private Node<T> predecessor (Node<T> curr){ //receives left child of the 'value' to find its predecessor
+        while (curr.childrenSize != 0){
+            curr = curr.children[curr.childrenSize-1];
+        }
+        return curr;
+    }
+
+    private Node<T> successor (Node<T> curr){ //receives right child of the 'value' to find its successor
+        while (curr.childrenSize != 0){
+            curr = curr.children[0];
+        }
+        return curr;
+    }
+
+    //    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //        Object[] searchResult = this.Search(this.root, value);
 //        if (searchResult == null || searchResult[0] == null) return null;
 //        Node<T> toDelete = (Node<T>)searchResult[0];
@@ -143,65 +239,6 @@ public class BTree<T extends Comparable<T>> {
 //		return null;
 //    }
 
-
-    public T delete(T value) {
-        Node<T> toDelete = this.getNode(value);
-        //if toDelete is a root
-
-        if (toDelete.childrenSize == 0) { // in case toDelete is a leaf
-            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
-            else {
-                this.combined(toDelete);
-                toDelete.removeKey(value);
-            }
-            return value;
-
-
-
-        }
-
-        //case 1: toDelete has a pred or as succ
-        if (toDelete.getChild(toDelete.indexOf(value)).keysSize == this.minKeySize && toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == this.minKeySize) {
-            Node<T> pred = this.predecessor(toDelete.getChild(toDelete.indexOf(value)));
-            Node<T> succ;
-            if (pred.keysSize > this.minKeySize || removeFromBro(pred)) {
-                toDelete.addKey(pred.removeKey(0));
-                toDelete.removeKey(value);
-                return value;
-            } else {
-                succ = this.successor(toDelete.getChild(toDelete.indexOf(value) + 1));
-                if (succ.keysSize > minKeySize || removeFromBro(succ)) {
-                    toDelete.addKey(succ.removeKey(0));
-                    toDelete.removeKey(value);
-                    return value;
-                }
-            }
-        }
-        downMerge(toDelete,value);
-
-
-
-
-        //case 2: toDelete does not have presd/succ => downmerge (not important if toDelete is a root or an inner node)
-
-        return value;
-    }
-
-    private Node<T> predecessor (Node<T> curr){ //receives left child of the 'value' to find its predecessor
-        while (curr.childrenSize != 0){
-            curr = curr.children[curr.childrenSize-1];
-        }
-        return curr;
-    }
-
-    private Node<T> successor (Node<T> curr){ //receives right child of the 'value' to find its successor
-        while (curr.childrenSize != 0){
-            curr = curr.children[0];
-        }
-        return curr;
-    }
-
-
     /*
         else if (toDelete == this.root && toDelete.keysSize == 1){
         Node<T> leftChild = toDelete.children[0];
@@ -225,82 +262,43 @@ public class BTree<T extends Comparable<T>> {
     }
      */
 
-    private void downMerge(Node<T> source, T value) {
-        if(source.childrenSize==0)
-            source.removeKey(value);
-        else {
-            int indexOfLeftChild = source.indexOf(value);
-            Node<T> leftChild = source.getChild(indexOfLeftChild);
-            Node<T> rightBro = source.getChild(indexOfLeftChild + 1);
-            leftChild.addKey(source.removeKey(indexOfLeftChild));
-            for (int i = 0; i < rightBro.keysSize; i++)
-                leftChild.addKey(rightBro.keys[i]); //toDelete receives the values of right brother
-            source.removeChild(rightBro); //right brother is removed
-            source.removeKey(value);
-            downMerge(leftChild, value);
-        }
-    }
+//    private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        Node<T> bro;
+//        if (indexInParent > 0){ // in case of merge with left brother
+//            bro = toDelete.parent.children[indexInParent-1]; // getChild(toDelete.parent.indexOf(toDelete)-1); //left brother
+//            bro.addKey(bro.parent.removeKey(indexInParent-1)); //left brother receives the value of medial parent
+//            for (int i = 0; i < toDelete.keysSize; i++)
+//                bro.addKey(toDelete.keys[i]); //left brother receives the values of toDelete
+//            bro.parent.removeChild(toDelete); //toDelete is removed
+//            return bro;
+//        }
+//        else if(indexInParent < (toDelete.parent.children.length-1)){ // in case of merge with right brother
+//            bro = toDelete.parent.children[indexInParent+1];
+//            toDelete.addKey(bro.parent.removeKey(indexInParent)); //toDelete receives the value of medial parent
+//            for (int i = 0; i < bro.keysSize; i++)
+//                toDelete.addKey(bro.keys[i]); //toDelete receives the values of left brother
+//            toDelete.parent.removeChild(bro); //left brother is removed
+//            return toDelete;
+//        }
+//        return toDelete;
+//    }
 
-    private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Node<T> bro;
-        if (indexInParent > 0){ // in case of merge with left brother
-            bro = toDelete.parent.children[indexInParent-1]; // getChild(toDelete.parent.indexOf(toDelete)-1); //left brother
-            bro.addKey(bro.parent.removeKey(indexInParent-1)); //left brother receives the value of medial parent
-            for (int i = 0; i < toDelete.keysSize; i++)
-                bro.addKey(toDelete.keys[i]); //left brother receives the values of toDelete
-            bro.parent.removeChild(toDelete); //toDelete is removed
-            return bro;
-        }
-        else if(indexInParent < (toDelete.parent.children.length-1)){ // in case of merge with right brother
-            bro = toDelete.parent.children[indexInParent+1];
-            toDelete.addKey(bro.parent.removeKey(indexInParent)); //toDelete receives the value of medial parent
-            for (int i = 0; i < bro.keysSize; i++)
-                toDelete.addKey(bro.keys[i]); //toDelete receives the values of left brother
-            toDelete.parent.removeChild(bro); //left brother is removed
-            return toDelete;
-        }
-        return toDelete;
-    }
+//    private Object[] Search(Node<T> curr, T value){// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        // consider the case if the root and its children don't have enough keys!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        int i = 0;
+//        while (i < curr.numberOfKeys() && (value.compareTo(curr.keys[i])>0)) i++;
+//        if (value.equals(curr.keys[i])) return new Object[]{curr, i};
+//        if (curr.childrenSize == 0) return null;
+//        else {
+//            if (curr.children[i].numberOfKeys() == this.minKeySize) return Search(increaseNumOfKeys(curr.children[i], i), value);
+//            else return Search(curr.children[i], value);
+//        }
+//    }
 
-    private Object[] Search(Node<T> curr, T value){// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // consider the case if the root and its children don't have enough keys!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        int i = 0;
-        while (i < curr.numberOfKeys() && (value.compareTo(curr.keys[i])>0)) i++;
-        if (value.equals(curr.keys[i])) return new Object[]{curr, i};
-        if (curr.childrenSize == 0) return null;
-        else {
-            if (curr.children[i].numberOfKeys() == this.minKeySize) return Search(increaseNumOfKeys(curr.children[i], i), value);
-            else return Search(curr.children[i], value);
-        }
-    }
-
-    private Node<T> increaseNumOfKeys(Node<T> toIncrease, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if (removeFromBro(toIncrease)) return toIncrease;
-        return merge(toIncrease, indexInParent);
-    }
-
-    private boolean removeFromBro(Node<T> toDelete){
-        Node<T> parent = toDelete.parent;
-        Node<T> broNode;
-        int i = 0;
-        while (!parent.children[i].equals(toDelete)) i++;
-        if(i > 0 && parent.children[i-1].numberOfKeys() > this.minKeySize){ //remove from left bro
-            broNode = parent.children[i-1];
-            toDelete.addKey(parent.keys[i-1]);
-            int broLength = broNode.keysSize;
-            parent.keys[i-1] = broNode.keys[broLength-1];
-            broNode.removeKey(broLength-1);
-            return true;
-        }
-        else if(i < (parent.children.length-1) && parent.children[i+1].numberOfKeys() > this.minKeySize){ //remove from right bro
-            broNode = parent.children[i+1];
-            toDelete.addKey(parent.keys[i]);
-            parent.keys[i] = broNode.keys[0];
-            broNode.removeKey(0);
-            return true;
-        }
-        return false;
-    }
+//    private Node<T> increaseNumOfKeys(Node<T> toIncrease, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        if (removeFromBro(toIncrease)) return toIncrease;
+//        return merge(toIncrease, indexInParent);
+//    }
 
     
 	//Task 2.2
