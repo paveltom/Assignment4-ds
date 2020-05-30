@@ -300,7 +300,50 @@ public class BTree<T extends Comparable<T>> {
     
 	//Task 2.2
     public boolean insert2pass(T value) {
-    	// TODO: implement your code here
+        Node<T> firstToSplit = this.root;
+        Node<T> curr = this.root;
+        while (curr.childrenSize != 0){
+
+            //statement to save the first node to split in the chain of nodes to split
+            if (curr.keysSize < maxKeySize) firstToSplit = null;
+            if (curr.keysSize == this.maxKeySize && firstToSplit == null) firstToSplit = curr;
+
+            //searching for the leaf to insert the value
+            int i = 0;
+            while (i < curr.keysSize && curr.keys[i].compareTo(value) <= 0) i++;
+            curr = curr.children[i+1];
+
+        }
+
+        if (curr.keysSize < maxKeySize){ //in case the leaf is not maximal
+            curr.addKey(value);
+            return true;
+        }
+        else {
+            while (firstToSplit.childrenSize != 0) {
+                Node<T> currParent = firstToSplit.parent;
+                T medianValue = firstToSplit.getKey(firstToSplit.keysSize/2);
+                this.split(firstToSplit);
+                Node<T> tempChild;
+                if (value.compareTo(medianValue) <= 0) tempChild = currParent.getChild(currParent.indexOf(value));
+                else tempChild = currParent.getChild(currParent.indexOf(value) + 1);
+                /* int i
+                while (i < keysize && tempchild[i] <= value) i++
+
+                firsttosplit = tempchild[i];
+
+                } break while
+
+                firsttosplit.addkey(value)
+
+
+                 */
+
+
+
+            }
+
+        }
 		return false;
     }
     

@@ -34,36 +34,36 @@ public class StringHashMethods implements HashMethods
         generatedTree.insert(11);
         generatedTree.insert(24);
         generatedTree.insert(34);
-        generatedTree.insert(40);
-        generatedTree.insert(10);
-        generatedTree.insert(9);
-        generatedTree.insert(41);
-        generatedTree.insert(8);
-        generatedTree.insert(42);
-        generatedTree.insert(64);
-        generatedTree.insert(70);
-        generatedTree.insert(80);
-        generatedTree.insert(90);
-        generatedTree.insert(35);
+        generatedTree.insert(15);
+//        generatedTree.insert(10);
+//        generatedTree.insert(9);
+//        generatedTree.insert(41);
+//        generatedTree.insert(8);
+//        generatedTree.insert(42);
+//        generatedTree.insert(64);
+//        generatedTree.insert(70);
+//        generatedTree.insert(80);
+//        generatedTree.insert(90);
+//        generatedTree.insert(35);
 
         System.out.println(generatedTree.toString());
 
-        generatedTree.delete(40);
-        generatedTree.delete(42);
 //        generatedTree.delete(40);
-//        generatedTree.delete(64);
-//        generatedTree.delete(34);
-
-        System.out.println(generatedTree.toString());
-
-        generatedTree.insert(12);
-        generatedTree.delete(24);
-        generatedTree.delete(12);
-        generatedTree.delete(11);
-
-
-
-        System.out.println(generatedTree.toString());
+//        generatedTree.delete(42);
+////        generatedTree.delete(40);
+////        generatedTree.delete(64);
+////        generatedTree.delete(34);
+//
+//        System.out.println(generatedTree.toString());
+//
+//        generatedTree.insert(12);
+//        generatedTree.delete(24);
+//        generatedTree.delete(12);
+//        generatedTree.delete(11);
+//
+//
+//
+//        System.out.println(generatedTree.toString());
 
 
 
