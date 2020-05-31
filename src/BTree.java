@@ -91,7 +91,7 @@ public class BTree<T extends Comparable<T>> {
     public T delete(T value) {
         Node<T> toDelete = this.getNode(value);
 
-        // in case toDelete is a leaf
+        // in case toDelete is a leaf --- has to be changed -> 1-pass also for delete
         if (toDelete.childrenSize == 0) {
             if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
             else {
