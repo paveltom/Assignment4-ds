@@ -300,16 +300,17 @@ public class BTree<T extends Comparable<T>> {
     
 	//Task 2.2
     public boolean insert2pass(T value) {
-        if (this.root == null){
+        if (this.root == null) { //in case the tree is empty
             this.root = new Node<T>(null, maxKeySize, maxChildrenSize);
             this.root.addKey(value);
             return true;
         }
+
         Node<T> firstToSplit = this.root;
         Node<T> curr = this.root;
-        while (curr.childrenSize != 0) {
 
-            //statement to save the first node to split in the chain of nodes to split
+        while (curr.childrenSize != 0) {
+            //statement to preserve the first node to split, in the chain of nodes to split
             if (curr.keysSize < maxKeySize) firstToSplit = null;
             if (curr.keysSize == this.maxKeySize && firstToSplit == null) firstToSplit = curr;
 
@@ -319,42 +320,38 @@ public class BTree<T extends Comparable<T>> {
             curr = curr.children[i];
 
         }
-        if (firstToSplit == null) firstToSplit = curr;
+
+        if (firstToSplit == null) firstToSplit = curr; //in case firstToSplit wasn't updated in the last 'while' loop
 
         if (curr.keysSize < maxKeySize) { //in case the leaf is not maximal
             curr.addKey(value);
             return true;
         } else {
 
-            while (firstToSplit.childrenSize != 0) {
+            while (firstToSplit.childrenSize != 0) { //splitting function: from firstToSplit -> downwards
 
-                Node<T> currParent = firstToSplit.parent;
-                T medianValue = firstToSplit.getKey(firstToSplit.keysSize / 2); //the value that will rise to parent
+                Node<T> currParent = firstToSplit.parent; //holding firstToSplit parent in order to find the demanded node after the 'split' action
 
                 this.split(firstToSplit);
 
-                Node<T> tempChild;
-
                 if (currParent == null) currParent = this.root;
-//                if (value.compareTo(medianValue) <= 0)
-//                    tempChild = currParent.getChild(currParent.indexOf(value)); //maybe indexOf(medianValue)??
-//                else tempChild = currParent.getChild(currParent.indexOf(value) + 1);
-                  int k = 0;
-                  while (k < currParent.keysSize && currParent.keys[k].compareTo(value) <= 0) k++;
-                  tempChild = currParent.children[k];
 
+                //finding the child and than the next node to split, in order to continue the split action through the tree
                 int i = 0;
+                while (i < currParent.keysSize && currParent.keys[i].compareTo(value) <= 0) i++;
+                Node<T> tempChild = currParent.children[i];
+                i = 0;
                 while (i < tempChild.keysSize && tempChild.keys[i].compareTo(value) <= 0) i++;
-
                 firstToSplit = tempChild.children[i];
             }
-            if (firstToSplit.keysSize<maxKeySize) firstToSplit.addKey(value);
+
+            if (firstToSplit.keysSize < maxKeySize) firstToSplit.addKey(value);
             else { //in case the leaf has maximum key size
                 Node<T> tempParent = firstToSplit.parent;
                 this.split(firstToSplit);
                 if (tempParent == null) tempParent = this.root; // in case the leaf is the root
                 int i = 0;
-                while (i < tempParent.keysSize && tempParent.keys[i].compareTo(value) <= 0) i++;
+                while (i < tempParent.keysSize && tempParent.keys[i].compareTo(value) <= 0) i++; //finding the demanded child to insert the 'value'
                 tempParent.children[i].addKey(value);
             }
         }
