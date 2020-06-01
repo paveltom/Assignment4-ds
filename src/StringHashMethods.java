@@ -82,10 +82,18 @@ public class StringHashMethods implements HashMethods
 
         System.out.println(generatedTree.toString());
 
-//        generatedTree.delete(40);
-//        generatedTree.delete(42);
-////        generatedTree.delete(40);
+        generatedTree.delete(24);
+        System.out.println(generatedTree.toString());
+
+        generatedTree.delete(14);
+        System.out.println(generatedTree.toString());
+
+        generatedTree.delete(43);
+        System.out.println(generatedTree.toString());
+
 ////        generatedTree.delete(64);
+//        System.out.println(generatedTree.toString());
+
 ////        generatedTree.delete(34);
 //
 //        System.out.println(generatedTree.toString());

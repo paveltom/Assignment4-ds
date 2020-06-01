@@ -89,7 +89,7 @@ public class BTree<T extends Comparable<T>> {
 
 
     public T delete(T value) {
-        Node<T> toDelete = this.getNode(value);
+        Node<T> toDelete = this.searchAndFix(this.root, value);
 
         // in case toDelete is a leaf --- has to be changed -> 1-pass also for delete
         if (toDelete.childrenSize == 0) {
@@ -99,8 +99,6 @@ public class BTree<T extends Comparable<T>> {
                 toDelete.removeKey(value);
             }
             return value;
-
-
         }
 
         // in case toDelete is an inner node
@@ -127,6 +125,31 @@ public class BTree<T extends Comparable<T>> {
         return value;
     }
 
+    private Node<T> searchAndFix(Node<T> curr, T value) {
+        if (curr.childrenSize == 0 || this.hasValue(curr, value)) return curr;
+        int i = 0;
+        while (i < curr.keysSize && curr.keys[i].compareTo(value) <= 0) i++;
+        Node<T> tempChild = curr.getChild(i);
+        if (tempChild.keysSize > minKeySize) return searchAndFix(tempChild, value);
+        else { // in case the next node in the search is minimal (tempChild is minimal)
+            if (!removeFromBro(tempChild)) {
+                Node<T> bro;
+                if (i == curr.childrenSize - 1) { //in case tempChild is the most right child
+                    bro = curr.getChild(i - 1);
+                    i--;
+                } else bro = curr.getChild(i + 1);
+                tempChild.addKey(curr.removeKey(i));
+                if (curr.keysSize == 0) this.root = tempChild;
+                for (int k = 0; k < bro.keysSize; k++)
+                    tempChild.addKey(bro.keys[k]); //tempChild receives the values of brother
+                for (int k = 0; k < bro.childrenSize; k++)
+                    tempChild.addChild(bro.children[k]); //tempChild receives the children of brother
+                curr.removeChild(bro); //brother is removed
+            }
+        }
+        return searchAndFix(tempChild, value);
+    }
+
     private void downMerge(Node<T> source, T value) {
         if(source.childrenSize==0)
             source.removeKey(value);
@@ -141,13 +164,13 @@ public class BTree<T extends Comparable<T>> {
                 leftChild.addChild(rightBro.children[i]); //toDelete receives the childs of right brother
             source.removeChild(rightBro); //right brother is removed
             downMerge(leftChild, value);
-
         }
     }
 
     private boolean removeFromBro(Node<T> toDelete) { //shifting action - trying to increase the number of keys by receiving left/right key
         Node<T> parent = toDelete.parent;
-        Node<T> broNode;
+        Node<T> broNode = null;
+        boolean removed = false;
         int i = 0;
         while (!parent.children[i].equals(toDelete)) i++; //getting the index of median-key in 'parent'
         if (i > 0 && parent.children[i - 1].numberOfKeys() > this.minKeySize) { //take from left bro if possible
@@ -156,12 +179,14 @@ public class BTree<T extends Comparable<T>> {
             int broLength = broNode.keysSize;
             parent.keys[i - 1] = broNode.keys[broLength - 1];
             broNode.removeKey(broLength - 1);
+            toDelete.addChild(broNode.removeChild(broLength));
             return true;
         } else if (i < (parent.childrenSize - 1) && parent.children[i + 1].numberOfKeys() > this.minKeySize) { //take from right bro if possible
             broNode = parent.children[i + 1];
             toDelete.addKey(parent.keys[i]);
             parent.keys[i] = broNode.keys[0];
             broNode.removeKey(0);
+            toDelete.addChild(broNode.removeChild(0));
             return true;
         }
         return false;
@@ -179,6 +204,13 @@ public class BTree<T extends Comparable<T>> {
             curr = curr.children[0];
         }
         return curr;
+    }
+
+    private boolean hasValue (Node<T> nodeToCheck, T value) {
+        if (nodeToCheck == null) return false;
+        for (int i = 0; i < nodeToCheck.keysSize; i++)
+            if (nodeToCheck.keys[i].compareTo(value) == 0) return true;
+        return false;
     }
 
     //    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
