@@ -91,7 +91,7 @@ public class StringHashMethods implements HashMethods
         generatedTree.delete(43);
         System.out.println(generatedTree.toString());
 
-////        generatedTree.delete(64);
+//        generatedTree.delete(17);
 //        System.out.println(generatedTree.toString());
 
 ////        generatedTree.delete(34);
