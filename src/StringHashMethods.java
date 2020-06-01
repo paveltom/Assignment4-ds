@@ -31,20 +31,20 @@ public class StringHashMethods implements HashMethods
 
     public static void main(String[] args) {
         BTree<Integer> generatedTree = new BTree<Integer>(2);
-        generatedTree.insert(11);
-        generatedTree.insert(24);
-        generatedTree.insert(34);
-        generatedTree.insert(15);
-//        generatedTree.insert(10);
-//        generatedTree.insert(9);
-//        generatedTree.insert(41);
-//        generatedTree.insert(8);
-//        generatedTree.insert(42);
-//        generatedTree.insert(64);
-//        generatedTree.insert(70);
-//        generatedTree.insert(80);
-//        generatedTree.insert(90);
-//        generatedTree.insert(35);
+        generatedTree.insert2pass(11);
+        generatedTree.insert2pass(24);
+        generatedTree.insert2pass(34);
+        generatedTree.insert2pass(15);
+        generatedTree.insert2pass(10);
+        generatedTree.insert2pass(9);
+        generatedTree.insert2pass(41);
+        generatedTree.insert2pass(8);
+        generatedTree.insert2pass(42);
+        generatedTree.insert2pass(64);
+        generatedTree.insert2pass(70);
+        generatedTree.insert2pass(80);
+        generatedTree.insert2pass(7);
+        generatedTree.insert2pass(35);
 
         System.out.println(generatedTree.toString());
 
