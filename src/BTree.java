@@ -90,10 +90,10 @@ public class BTree<T extends Comparable<T>> {
 
     public T delete(T value) {
         Node<T> toDelete = this.searchAndFix(this.root, value);
-
         // in case toDelete is a leaf --- has to be changed -> 1-pass also for delete
         if (toDelete.childrenSize == 0) {
-            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
+            if(toDelete.parent==null& toDelete.keysSize==1)this.root = new Node<>(null,maxKeySize,maxChildrenSize);
+            else if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
             else {
                 this.combined(toDelete); //delete recursive call for a parent from combined????????????????????
                 toDelete.removeKey(value);
@@ -114,14 +114,18 @@ public class BTree<T extends Comparable<T>> {
                 toDelete.addKey(succ.removeKey(0));
                 toDelete.removeKey(value);
                 return value;
+            }  else {      // in case toDelete is an inner node with minimal children (of value) and minimal predecessor and successor
+                Node<T> temp1 = toDelete.getChild(toDelete.indexOf(value));
+                Node<T> temp2 = toDelete.getChild(toDelete.indexOf(value) + 1);
+                if (temp1.keysSize == minKeySize &
+                        temp2.keysSize == minKeySize)
+                    downMerge(toDelete, value);
+                else {
+                    T temp = delete(succ.keys[0]);
+                    toDelete.keys[toDelete.indexOf(value)] = temp;
+                }
             }
         }
-
-        // in case toDelete is an inner node with minimal children (of value) and minimal predecessor and successor
-        if (toDelete.getChild(toDelete.indexOf(value)).keysSize == minKeySize &
-                toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == minKeySize)
-            downMerge(toDelete, value);
-
         return value;
     }
 
