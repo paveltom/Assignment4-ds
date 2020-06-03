@@ -37,6 +37,7 @@ public class StringHashMethods implements HashMethods
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         reader.readLine();
     }
+
     public static void main(String[] args) throws IOException {
         BTree<Integer> generatedTree = new BTree<Integer>(2);
         generatedTree.insert(50);
@@ -73,6 +74,9 @@ public class StringHashMethods implements HashMethods
         generatedTree.delete(52);
         print(generatedTree);
         generatedTree.delete(44);
+        print(generatedTree);
+        System.out.println("coool");
+        generatedTree.delete(54);
         print(generatedTree);
 
 
