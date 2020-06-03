@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 public class StringHashMethods implements HashMethods
 {
     private final long [ ] MULTIPLIERS;
@@ -28,89 +32,52 @@ public class StringHashMethods implements HashMethods
 
         return hashVal;
     }
+    public static void  print (BTree<Integer> generatedTree) throws IOException {
+        System.out.println(generatedTree.toString());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        reader.readLine();
+    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         BTree<Integer> generatedTree = new BTree<Integer>(2);
-        generatedTree.insert2pass(11);
-//        generatedTree.insert2pass(24);
-//        generatedTree.insert2pass(34);
-//        generatedTree.insert2pass(15);
-//        generatedTree.insert2pass(14);
-//        generatedTree.insert2pass(9);
-//        generatedTree.insert2pass(41);
-//        generatedTree.insert2pass(8);
-//        generatedTree.insert2pass(42);
-//        generatedTree.insert2pass(64);
-//        generatedTree.insert2pass(70);
-//        generatedTree.insert2pass(80);
-//        generatedTree.insert2pass(7);
-//        generatedTree.insert2pass(35);
-//        generatedTree.insert2pass(6);
-//        generatedTree.insert2pass(16);
-//        generatedTree.insert2pass(17);
-//        generatedTree.insert2pass(37);
-//        generatedTree.insert2pass(90);
-//        generatedTree.insert2pass(43);
-//        generatedTree.insert2pass(44);
-//        generatedTree.insert2pass(12);
-//        generatedTree.insert2pass(13);
-//        generatedTree.insert2pass(45);
-//        generatedTree.insert2pass(38);
-//        generatedTree.insert2pass(85);
-//        generatedTree.insert2pass(46);
-//        generatedTree.insert2pass(47);
-//        generatedTree.insert2pass(5);
-//        generatedTree.insert2pass(75);
-//        generatedTree.insert2pass(18);
-//        generatedTree.insert2pass(10);
-//        generatedTree.insert2pass(19);
-//        generatedTree.insert2pass(20);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-        System.out.println(generatedTree.toString());
-//
-        generatedTree.delete(11);
-        System.out.println(generatedTree.toString());
-//
-//        generatedTree.delete(14);
-//        System.out.println(generatedTree.toString());
-//
-//        generatedTree.delete(43);
-//        System.out.println(generatedTree.toString());
-
-//        generatedTree.delete(17);
-//        System.out.println(generatedTree.toString());
-
-////        generatedTree.delete(34);
-//
-//        System.out.println(generatedTree.toString());
-//
-//        generatedTree.insert(12);
-//        generatedTree.delete(24);
-//        generatedTree.delete(12);
-//        generatedTree.delete(11);
-//
-//
-//
-//        System.out.println(generatedTree.toString());
-
-
-
-
-
+        generatedTree.insert(50);
+        print(generatedTree);
+        generatedTree.delete(50);
+        print(generatedTree);
+        generatedTree.insert(51);
+        generatedTree.insert(49);
+        generatedTree.insert(52);
+        generatedTree.insert(48);
+        generatedTree.insert(53);
+        generatedTree.insert(47);
+        generatedTree.insert(54);
+        generatedTree.insert(46);
+        generatedTree.insert(55);
+        generatedTree.insert(45);
+        generatedTree.insert(56);
+        generatedTree.insert(44);
+        generatedTree.insert(57);
+        generatedTree.insert(43);
+        generatedTree.insert(58);
+        generatedTree.insert(42);
+        generatedTree.insert(59);
+        generatedTree.insert(41);
+        print(generatedTree);
+        generatedTree.delete(57);
+        print(generatedTree);
+        generatedTree.delete(58);
+        print(generatedTree);
+        generatedTree.delete(53);
+        print(generatedTree);
+        generatedTree.delete(51);
+        print(generatedTree);
+        generatedTree.delete(52);
+        print(generatedTree);
+        generatedTree.delete(44);
+        print(generatedTree);
+        System.out.println("coool");
+        generatedTree.delete(54);
+        print(generatedTree);
 
 
 

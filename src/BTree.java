@@ -90,10 +90,10 @@ public class BTree<T extends Comparable<T>> {
 
     public T delete(T value) {
         Node<T> toDelete = this.searchAndFix(this.root, value);
-
         // in case toDelete is a leaf --- has to be changed -> 1-pass also for delete
         if (toDelete.childrenSize == 0) {
-            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
+            if(toDelete.parent==null& toDelete.keysSize==1)this.root = new Node<>(null,maxKeySize,maxChildrenSize);
+            else if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
             else {
                 this.combined(toDelete); //delete recursive call for a parent from combined????????????????????
                 toDelete.removeKey(value);
@@ -104,24 +104,24 @@ public class BTree<T extends Comparable<T>> {
         // in case toDelete is an inner node
         Node<T> pred = this.predecessor(toDelete.getChild(toDelete.indexOf(value)));
         Node<T> succ;
-        if (pred.keysSize > this.minKeySize || removeFromBro(pred)) {
+        if (pred.keysSize > this.minKeySize || combined(pred)) {
             toDelete.addKey(pred.removeKey(pred.keysSize - 1));
             toDelete.removeKey(value);
             return value;
         } else {
             succ = this.successor(toDelete.getChild(toDelete.indexOf(value) + 1));
-            if (succ.keysSize > minKeySize || removeFromBro(succ)) {
+            if (succ.keysSize > minKeySize || combined(succ)) {
                 toDelete.addKey(succ.removeKey(0));
                 toDelete.removeKey(value);
                 return value;
+            }  else {      // in case toDelete is an inner node with minimal children (of value) and minimal predecessor and successor
+                Node<T> temp1 = toDelete.getChild(toDelete.indexOf(value));
+                Node<T> temp2 = toDelete.getChild(toDelete.indexOf(value) + 1);
+                if (temp1.keysSize == minKeySize &
+                        temp2.keysSize == minKeySize)
+                    downMerge(toDelete, value);
             }
         }
-
-        // in case toDelete is an inner node with minimal children (of value) and minimal predecessor and successor
-        if (toDelete.getChild(toDelete.indexOf(value)).keysSize == minKeySize &
-                toDelete.getChild(toDelete.indexOf(value) + 1).keysSize == minKeySize)
-            downMerge(toDelete, value);
-
         return value;
     }
 
@@ -684,6 +684,7 @@ public class BTree<T extends Comparable<T>> {
             if (leftNeighbor.numberOfChildren() > 0) {
                 node.addChild(leftNeighbor.removeChild(leftNeighbor.numberOfChildren() - 1));
             }
+            return true;
         } else {
             Node<T> rightNeighbor = null;
             int rightNeighborSize = -minChildrenSize;
@@ -703,7 +704,8 @@ public class BTree<T extends Comparable<T>> {
                 if (rightNeighbor.numberOfChildren() > 0) {
                     node.addChild(rightNeighbor.removeChild(0));
                 }
-            } else if (leftNeighbor != null && parent.numberOfKeys() > 0) {
+                return true;
+            } else if (leftNeighbor != null && parent.numberOfKeys() > minKeySize) {
                 // Can't borrow from neighbors, try to combined with left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys()-1);
                 int prev = getIndexOfPreviousValue(parent, removeValue) + 1;
@@ -729,7 +731,8 @@ public class BTree<T extends Comparable<T>> {
                     node.parent = null;
                     root = node;
                 }
-            } else if (rightNeighbor != null && parent.numberOfKeys() > 0) {
+                return true;
+            } else if (rightNeighbor != null && parent.numberOfKeys() > minKeySize) {
                 // Can't borrow from neighbors, try to combined with right neighbor
                 T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfNextValue(parent, removeValue) - 1; //was without '-1' - pay attention!!!!!!!!!!!!!!!!
@@ -746,19 +749,21 @@ public class BTree<T extends Comparable<T>> {
                     node.addChild(c);
                 }
 
-                if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
-                    // removing key made parent too small, combined up tree
-                    this.combined(parent);
-                } else if (parent.numberOfKeys() == 0) {
+//                if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
+//                    // removing key made parent too small, combined up tree
+//                    this.combined(parent);
+//                } else
+                    if (parent.numberOfKeys() == 0) {
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
                     root = node;
                 }
+                 return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
