@@ -32,64 +32,64 @@ public class StringHashMethods implements HashMethods
     public static void main(String[] args) {
         BTree<Integer> generatedTree = new BTree<Integer>(2);
         generatedTree.insert2pass(11);
-        generatedTree.insert2pass(24);
-        generatedTree.insert2pass(34);
-        generatedTree.insert2pass(15);
-        generatedTree.insert2pass(14);
-        generatedTree.insert2pass(9);
-        generatedTree.insert2pass(41);
-        generatedTree.insert2pass(8);
-        generatedTree.insert2pass(42);
-        generatedTree.insert2pass(64);
-        generatedTree.insert2pass(70);
-        generatedTree.insert2pass(80);
-        generatedTree.insert2pass(7);
-        generatedTree.insert2pass(35);
-        generatedTree.insert2pass(6);
-        generatedTree.insert2pass(16);
-        generatedTree.insert2pass(17);
-        generatedTree.insert2pass(37);
-        generatedTree.insert2pass(90);
-        generatedTree.insert2pass(43);
-        generatedTree.insert2pass(44);
-        generatedTree.insert2pass(12);
-        generatedTree.insert2pass(13);
-        generatedTree.insert2pass(45);
-        generatedTree.insert2pass(38);
-        generatedTree.insert2pass(85);
-        generatedTree.insert2pass(46);
-        generatedTree.insert2pass(47);
-        generatedTree.insert2pass(5);
-        generatedTree.insert2pass(75);
-        generatedTree.insert2pass(18);
-        generatedTree.insert2pass(10);
-        generatedTree.insert2pass(19);
-        generatedTree.insert2pass(20);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//        generatedTree.insert2pass(24);
+//        generatedTree.insert2pass(34);
+//        generatedTree.insert2pass(15);
+//        generatedTree.insert2pass(14);
+//        generatedTree.insert2pass(9);
+//        generatedTree.insert2pass(41);
+//        generatedTree.insert2pass(8);
+//        generatedTree.insert2pass(42);
+//        generatedTree.insert2pass(64);
+//        generatedTree.insert2pass(70);
+//        generatedTree.insert2pass(80);
+//        generatedTree.insert2pass(7);
+//        generatedTree.insert2pass(35);
+//        generatedTree.insert2pass(6);
+//        generatedTree.insert2pass(16);
+//        generatedTree.insert2pass(17);
+//        generatedTree.insert2pass(37);
+//        generatedTree.insert2pass(90);
+//        generatedTree.insert2pass(43);
+//        generatedTree.insert2pass(44);
+//        generatedTree.insert2pass(12);
+//        generatedTree.insert2pass(13);
+//        generatedTree.insert2pass(45);
+//        generatedTree.insert2pass(38);
+//        generatedTree.insert2pass(85);
+//        generatedTree.insert2pass(46);
+//        generatedTree.insert2pass(47);
+//        generatedTree.insert2pass(5);
+//        generatedTree.insert2pass(75);
+//        generatedTree.insert2pass(18);
+//        generatedTree.insert2pass(10);
+//        generatedTree.insert2pass(19);
+//        generatedTree.insert2pass(20);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
         System.out.println(generatedTree.toString());
-
-        generatedTree.delete(24);
+//
+        generatedTree.delete(11);
         System.out.println(generatedTree.toString());
-
-        generatedTree.delete(14);
-        System.out.println(generatedTree.toString());
-
-        generatedTree.delete(43);
-        System.out.println(generatedTree.toString());
+//
+//        generatedTree.delete(14);
+//        System.out.println(generatedTree.toString());
+//
+//        generatedTree.delete(43);
+//        System.out.println(generatedTree.toString());
 
 //        generatedTree.delete(17);
 //        System.out.println(generatedTree.toString());
