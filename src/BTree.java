@@ -39,12 +39,9 @@ public class BTree<T extends Comparable<T>> {
             root = new Node<T>(null, maxKeySize, maxChildrenSize);
             root.addKey(value);
         } else {
-            Node<T> tempRoot = this.root; //a temporal node which receives a nodes on the path
+            Node<T> tempRoot = this.root;
 
-            if (tempRoot.keysSize == this.maxKeySize) { //split curr
-//                Node<T> newRoot = new Node<T>(null, this.maxKeySize, this.maxChildrenSize);
-//                this.root = newRoot;
-//                newRoot.addChild(tempRoot);
+            if (tempRoot.keysSize == this.maxKeySize) { //in case the root is full
                 this.split(tempRoot);
                 this.insertNonFull(this.root, value);
             } else this.insertNonFull(tempRoot, value);
@@ -90,12 +87,14 @@ public class BTree<T extends Comparable<T>> {
 
     public T delete(T value) {
         Node<T> toDelete = this.searchAndFix(this.root, value);
-        // in case toDelete is a leaf --- has to be changed -> 1-pass also for delete
+
+        // in case toDelete is a leaf
         if (toDelete.childrenSize == 0) {
-            if(toDelete.parent==null& toDelete.keysSize==1)this.root = new Node<>(null,maxKeySize,maxChildrenSize);
-            else if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
-            else {
-                this.combined(toDelete); //delete recursive call for a parent from combined????????????????????
+            if (toDelete.parent == null && toDelete.keysSize == 1) //in case the whole tree contains only 1 key
+                this.root = new Node<>(null, maxKeySize, maxChildrenSize);
+            else if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value); //case 1 - as taught in class
+            else { //in case toDelete is a minimal leaf
+                this.combined(toDelete);
                 toDelete.removeKey(value);
             }
             return value;
@@ -114,7 +113,7 @@ public class BTree<T extends Comparable<T>> {
                 toDelete.addKey(succ.removeKey(0));
                 toDelete.removeKey(value);
                 return value;
-            }  else {      // in case toDelete is an inner node with minimal children (of value) and minimal predecessor and successor
+            }  else { // in case toDelete is an inner node with minimal childs (of value) and minimal predecessor and successor
                 Node<T> temp1 = toDelete.getChild(toDelete.indexOf(value));
                 Node<T> temp2 = toDelete.getChild(toDelete.indexOf(value) + 1);
                 if (temp1.keysSize == minKeySize &
@@ -125,6 +124,7 @@ public class BTree<T extends Comparable<T>> {
         return value;
     }
 
+    //search through the tree for a node that contains the 'key' - minimal nodes on the path will be shifted / merged.
     private Node<T> searchAndFix(Node<T> curr, T value) {
         if (curr.childrenSize == 0 || this.hasValue(curr, value)) return curr;
 
@@ -133,7 +133,7 @@ public class BTree<T extends Comparable<T>> {
         Node<T> tempChild = curr.getChild(i);
 
         if (tempChild.keysSize > minKeySize) return searchAndFix(tempChild, value);
-        else { // in case the next node in the search path is minimal (tempChild is minimal)
+        else { // in case the next node in the search-path is minimal (=tempChild is minimal)
             if (!removeFromBro(tempChild)) { //try to receive a key from one of the brothers (shifting)
                 //if shifting was not succeed - try to perform a merging action
                 Node<T> bro;
@@ -216,123 +216,6 @@ public class BTree<T extends Comparable<T>> {
             if (nodeToCheck.keys[i].compareTo(value) == 0) return true;
         return false;
     }
-
-    //    public T delete(T value) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        Object[] searchResult = this.Search(this.root, value);
-//        if (searchResult == null || searchResult[0] == null) return null;
-//        Node<T> toDelete = (Node<T>)searchResult[0];
-//        int i = (int)searchResult[1]; //index of toDelete in its parent.children array
-//
-//        if (toDelete.parent == null){ //in case of root
-//
-//            // add case the root is of size 1
-//            if (toDelete.keysSize == 1 && toDelete.childrenSize > 0){
-//
-//
-//                //if both childs are minimal
-//
-//                //if one of the childs is not minimal
-//
-//                //consider childs could have childs
-//            }
-//
-//
-//            if (toDelete.childrenSize == 0){
-//                toDelete.removeKey(value);
-//            }
-//            else {
-//                if (toDelete.children[i].keysSize > this.minKeySize){
-//                    if(toDelete.children[i].childrenSize == 0) toDelete.keys[i] = toDelete.children[i].removeKey(toDelete.children[i].childrenSize-1);
-//                    // else - child is not a leaf
-//                }
-//                else if(toDelete.children[i + 1].keysSize > this.minKeySize) {
-//                    if (toDelete.children[i+1].childrenSize == 0) toDelete.keys[i] = toDelete.children[i + 1].removeKey(0);
-//                    // else - child is not a leaf
-//                }
-//                else {
-//                    // merging of two childs and removing the value from todelete
-//                    Node<T> merged = toDelete.children[i];
-//                    for (int k = 0; k < toDelete.children[i+1].keysSize; k++) merged.addKey(toDelete.children[i+1].keys[k]);
-//                    toDelete.removeChild(i+1);
-//                    toDelete.removeKey(i);
-//                }
-//            }
-//
-//        }
-//
-//        if(toDelete.childrenSize == 0) { // in case toDelete is a leaf
-//            if (toDelete.numberOfKeys() > this.minKeySize) toDelete.removeKey(value);
-//            else if(removeFromBro(toDelete)) toDelete.removeKey(value);
-//                else {
-//                toDelete = merge(toDelete, i); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                toDelete.removeKey(value);
-//                 }
-//            return value;
-//        }
-//		return null;
-//    }
-
-    /*
-        else if (toDelete == this.root && toDelete.keysSize == 1){
-        Node<T> leftChild = toDelete.children[0];
-        Node<T> rightChild = toDelete.children[1];
-
-        if (leftChild.keysSize == minKeySize && rightChild.keysSize == minKeySize){
-            for (int i = 0; i < rightChild.keysSize; i++)
-                leftChild.addKey(rightChild.keys[i]);
-            for(int i = 0; i < rightChild.childrenSize; i++)
-                leftChild.addChild(rightChild.children[i]);
-            this.root = leftChild;
-            leftChild.parent = null;
-        }
-        else {
-            if (leftChild.keysSize > this.minKeySize){
-
-            }
-            else
-
-        }
-    }
-     */
-
-//    private Node<T> merge(Node<T> toDelete, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        Node<T> bro;
-//        if (indexInParent > 0){ // in case of merge with left brother
-//            bro = toDelete.parent.children[indexInParent-1]; // getChild(toDelete.parent.indexOf(toDelete)-1); //left brother
-//            bro.addKey(bro.parent.removeKey(indexInParent-1)); //left brother receives the value of medial parent
-//            for (int i = 0; i < toDelete.keysSize; i++)
-//                bro.addKey(toDelete.keys[i]); //left brother receives the values of toDelete
-//            bro.parent.removeChild(toDelete); //toDelete is removed
-//            return bro;
-//        }
-//        else if(indexInParent < (toDelete.parent.children.length-1)){ // in case of merge with right brother
-//            bro = toDelete.parent.children[indexInParent+1];
-//            toDelete.addKey(bro.parent.removeKey(indexInParent)); //toDelete receives the value of medial parent
-//            for (int i = 0; i < bro.keysSize; i++)
-//                toDelete.addKey(bro.keys[i]); //toDelete receives the values of left brother
-//            toDelete.parent.removeChild(bro); //left brother is removed
-//            return toDelete;
-//        }
-//        return toDelete;
-//    }
-
-//    private Object[] Search(Node<T> curr, T value){// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        // consider the case if the root and its children don't have enough keys!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        int i = 0;
-//        while (i < curr.numberOfKeys() && (value.compareTo(curr.keys[i])>0)) i++;
-//        if (value.equals(curr.keys[i])) return new Object[]{curr, i};
-//        if (curr.childrenSize == 0) return null;
-//        else {
-//            if (curr.children[i].numberOfKeys() == this.minKeySize) return Search(increaseNumOfKeys(curr.children[i], i), value);
-//            else return Search(curr.children[i], value);
-//        }
-//    }
-
-//    private Node<T> increaseNumOfKeys(Node<T> toIncrease, int indexInParent){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        if (removeFromBro(toIncrease)) return toIncrease;
-//        return merge(toIncrease, indexInParent);
-//    }
-
     
 	//Task 2.2
     public boolean insert2pass(T value) {
@@ -658,7 +541,7 @@ public class BTree<T extends Comparable<T>> {
      *            with children to combined.
      * @return True if combined successfully.
      */
-    private boolean combined(Node<T> node) {
+    private boolean combined(Node<T> node) { //changed
         Node<T> parent = node.parent;
         int index = parent.indexOf(node);
         int indexOfLeftNeighbor = index - 1;
