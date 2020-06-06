@@ -82,8 +82,8 @@ public class StringHashMethods implements HashMethods
         generatedTree.insert(44);
         print(generatedTree);
 
-//        generatedTree.insert(44);
-//        print(generatedTree);
+        generatedTree.insert(44);
+        print(generatedTree);
 
         generatedTree.insert(43);
         print(generatedTree);
@@ -91,8 +91,8 @@ public class StringHashMethods implements HashMethods
         generatedTree.insert(58);
         print(generatedTree);
 
-//        generatedTree.insert(58);
-//        print(generatedTree);
+        generatedTree.insert(58);
+        print(generatedTree);
 
         generatedTree.insert(59);
         print(generatedTree);
@@ -146,7 +146,9 @@ public class StringHashMethods implements HashMethods
 
 //        generatedTree.delete(57);
 //        print(generatedTree);
-        generatedTree.delete(41);
+        generatedTree.delete(58);
+        print(generatedTree);
+        generatedTree.delete(58);
         print(generatedTree);
         generatedTree.delete(53);
         print(generatedTree);
@@ -156,8 +158,8 @@ public class StringHashMethods implements HashMethods
         print(generatedTree);
         generatedTree.delete(44);
         print(generatedTree);
-//        generatedTree.delete(44);
-//        print(generatedTree);
+        generatedTree.delete(44);
+        print(generatedTree);
 
 
 

@@ -137,13 +137,17 @@ public class BTree<T extends Comparable<T>> {
             if (!removeFromBro(tempChild)) { //try to receive a key from one of the brothers (shifting)
                 //if shifting was not succeed - try to perform a merging action
                 Node<T> bro;
-                if (i == curr.childrenSize - 1) { //in case tempChild is the most right child
-                    bro = curr.getChild(i - 1);
-                    i--;
-                } else bro = curr.getChild(i + 1);
+//                if (i == curr.childrenSize - 1) { //in case tempChild is the most right child
+//                    bro = curr.getChild(i - 1);
+//                    i--;
+//                } else bro = curr.getChild(i + 1);
+                if (i == 0) { //in case tempChild is the most left child
+                    bro = curr.getChild(i + 1);
+                } else bro = curr.getChild(i - 1);
 
                 tempChild.addKey(curr.removeKey(i));
-                if (curr.keysSize == 0) this.root = tempChild; //if curr had only one key after searchAndFix iteration - curr is a root
+                if (curr.keysSize == 0)
+                    this.root = tempChild; //if curr had only one key after searchAndFix iteration - curr is a root
 
                 for (int k = 0; k < bro.keysSize; k++)
                     tempChild.addKey(bro.keys[k]); //tempChild receives the values of brother
@@ -621,7 +625,7 @@ public class BTree<T extends Comparable<T>> {
                 // Can't borrow from neighbors, try to combined with right neighbor
                 T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfNextValue(parent, removeValue) - 1; //was without '-1' - pay attention!!!!!!!!!!!!!!!!
-                if (parent.keysSize == 1) prev = 0;
+                if (parent.keysSize == 1 || prev == -1) prev = 0; // if (parent.keysSize == 1)
                 T parentValue = parent.removeKey(prev);
                 parent.removeChild(rightNeighbor);
                 node.addKey(parentValue);
