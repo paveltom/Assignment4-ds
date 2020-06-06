@@ -6,14 +6,14 @@ import java.util.*;
  */
 public class CuckooHashing {
     private static final int DEFAULT_TABLE_SIZE = 101;
-    
+
     private final HashMethods hashFunctions;
     private final int numHashFunctions;
-    
+
     private String[] array; // The array of elements
     private int currentSize; // The number of occupied cells
     private ArrayList<String> stash; //List of items that couldn't find a place
-    
+
     /**
      * Construct the hash table.
      */
@@ -34,7 +34,7 @@ public class CuckooHashing {
         hashFunctions = hf;
         numHashFunctions = hf.getNumberOfFunctions();
     }
-    
+
     /**
      * Insert into the hash table. If the item is
      * already present, return false.
@@ -42,15 +42,15 @@ public class CuckooHashing {
      * @param x the item to insert.
      */
     public boolean insert(String x) {
-    	if(this.capacity()==this.size()){
-    		return false;
-    	}
+        if(this.capacity()==this.size()){
+            return false;
+        }
         if (find(x))
             return false;
 
         return insertHelper1(x);
     }
-    
+
     private boolean insertHelper1(String x) {
         while (true) {
             int pos = -1;
@@ -60,18 +60,18 @@ public class CuckooHashing {
             //but is necessary to avoid randomization so we can test your work
             ArrayList<ArrayList<String>> cycle_tester = new ArrayList<ArrayList<String>>();
             for(int i=0;i<this.capacity();i++){
-            	cycle_tester.add(i, new ArrayList<String>());
+                cycle_tester.add(i, new ArrayList<String>());
             }
             boolean cycle=false;
-            
+
             int MAXTRIES  = this.size();
             for (int count = 0; count <= MAXTRIES; count++) {
                 for (int i = 0; i < numHashFunctions; i++) {
                     pos = myhash(x, i);
                     if(isCycle(cycle_tester,x,pos))
                     {
-                    	cycle=true;
-                    	break;
+                        cycle=true;
+                        break;
                     }
                     cycle_tester.get(pos).add(x);
                     if (array[pos] == null) {
@@ -79,14 +79,14 @@ public class CuckooHashing {
                         currentSize++;
                         return true;
                     }
-                    
-                } 
+
+                }
                 if(cycle)
-                	break;
+                    break;
                 if(pos==kick_pos || kick_pos==-1)
-                	kick_pos= myhash(x, 0);
-				else
-					kick_pos=pos;
+                    kick_pos= myhash(x, 0);
+                else
+                    kick_pos=pos;
                 // none of the spots are available, kick out item in kick_pos
                 String tmp = array[kick_pos];
                 array[kick_pos] = x;
@@ -98,12 +98,12 @@ public class CuckooHashing {
         }
     }
     private boolean isCycle(ArrayList<ArrayList<String>> cycle_tester,String x,int i) {
-    	return cycle_tester.get(i).contains(x);
+        return cycle_tester.get(i).contains(x);
     }
-	
-	public void undo() {
-		// TODO: implement your code here
-	}
+
+    public void undo() {
+        // TODO: implement your code here
+    }
 
     /**
      * @param x the item
@@ -119,7 +119,7 @@ public class CuckooHashing {
 
         return (int) hashVal;
     }
-    
+
     /**
      * Finds an item in the hash table.
      *
@@ -129,7 +129,7 @@ public class CuckooHashing {
     public boolean find(String x) {
         return findPos(x) != -1;
     }
-    
+
     /**
      * Method that searches all hash function places.
      *
@@ -143,9 +143,9 @@ public class CuckooHashing {
                 return pos;
         }
         for(String s:stash) {
-        	if(s.equals(x)){
-        		return this.capacity()+1;
-        	}		
+            if(s.equals(x)){
+                return this.capacity()+1;
+            }
         }
 
         return -1;
@@ -178,12 +178,12 @@ public class CuckooHashing {
     public boolean remove(String x) {
         int pos = findPos(x);
         if(pos==-1)
-        	return false;
+            return false;
         if (pos<this.capacity()) {
             array[pos] = null;
-			currentSize--;
+            currentSize--;
         } else {
-        	this.stash.remove(x);
+            this.stash.remove(x);
         }
         return true;
     }
@@ -192,26 +192,26 @@ public class CuckooHashing {
      * Make the hash table logically empty.
      */
     public void makeEmpty() {
-    	currentSize = 0;
+        currentSize = 0;
         for (int i = 0; i < array.length; i++)
             array[i] = null;
         this.stash.clear();
     }
-    
+
     public String toString() {
-    	String ans = "";
-    	for (int i = 0; i < capacity(); i++) {
+        String ans = "";
+        for (int i = 0; i < capacity(); i++) {
             if (array[i] != null)
                 ans = ans.concat("Index: "+ i + " ,String: " +array[i]+"\n");
         }
-    	int i=0;
+        int i=0;
         for(String s:stash) {
-        	ans = ans + "Overflow["+ i + "] ,String: " +s+"\n";
-        	i++;
+            ans = ans + "Overflow["+ i + "] ,String: " +s+"\n";
+            i++;
         }
         return ans;
     }
-    
+
     /**
      * Method to allocate array.
      */
@@ -248,5 +248,5 @@ public class CuckooHashing {
 
         return true;
     }
-	
+
 }

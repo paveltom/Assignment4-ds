@@ -18,8 +18,8 @@ public class StringHashMethods implements HashMethods
 
     public void generateNewFunctions( )
     {
-    	MULTIPLIERS[0] = 2;
-    	MULTIPLIERS[1] = 3;
+        MULTIPLIERS[0] = 2;
+        MULTIPLIERS[1] = 3;
     }
 
     public long hash( String input, int index )
@@ -32,6 +32,7 @@ public class StringHashMethods implements HashMethods
 
         return hashVal;
     }
+
     public static void  print (BTree<Integer> generatedTree) throws IOException {
         System.out.println(generatedTree.toString());
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
