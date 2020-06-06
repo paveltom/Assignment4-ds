@@ -46,105 +46,107 @@ public class StringHashMethods implements HashMethods
         generatedTree.delete(50);
         print(generatedTree);
 
-        generatedTree.insert2pass(51);
+        generatedTree.insert(51);
         print(generatedTree);
 
-        generatedTree.insert2pass(49);
+        generatedTree.insert(49);
         print(generatedTree);
 
-        generatedTree.insert2pass(52);
+        generatedTree.insert(52);
         print(generatedTree);
 
-        generatedTree.insert2pass(48);
+        generatedTree.insert(48);
         print(generatedTree);
 
-        generatedTree.insert2pass(53);
+        generatedTree.insert(53);
         print(generatedTree);
 
-        generatedTree.insert2pass(47);
+        generatedTree.insert(47);
         print(generatedTree);
 
-        generatedTree.insert2pass(54);
+        generatedTree.insert(54);
         print(generatedTree);
 
-        generatedTree.insert2pass(46);
+        generatedTree.insert(46);
         print(generatedTree);
 
-        generatedTree.insert2pass(55);
+        generatedTree.insert(55);
         print(generatedTree);
 
-        generatedTree.insert2pass(45);
+        generatedTree.insert(45);
         print(generatedTree);
 
-        generatedTree.insert2pass(56);
+        generatedTree.insert(56);
         print(generatedTree);
 
-        generatedTree.insert2pass(44);
+        generatedTree.insert(44);
         print(generatedTree);
 
-        generatedTree.insert2pass(57);
+//        generatedTree.insert(44);
+//        print(generatedTree);
+
+        generatedTree.insert(43);
         print(generatedTree);
 
-        generatedTree.insert2pass(43);
+        generatedTree.insert(58);
         print(generatedTree);
 
-        generatedTree.insert2pass(58);
+//        generatedTree.insert(58);
+//        print(generatedTree);
+
+        generatedTree.insert(59);
         print(generatedTree);
 
-        generatedTree.insert2pass(42);
+        generatedTree.insert(41);
         print(generatedTree);
 
-        generatedTree.insert2pass(59);
+        generatedTree.insert(33);
         print(generatedTree);
 
-        generatedTree.insert2pass(41);
+        generatedTree.insert(30);
         print(generatedTree);
 
-        generatedTree.insert2pass(33);
+        generatedTree.insert(60);
         print(generatedTree);
 
-        generatedTree.insert2pass(30);
+        generatedTree.insert(39);
         print(generatedTree);
 
-        generatedTree.insert2pass(60);
+        generatedTree.insert(38);
         print(generatedTree);
 
-        generatedTree.insert2pass(39);
+        generatedTree.insert(62);
         print(generatedTree);
 
-        generatedTree.insert2pass(38);
+        generatedTree.insert(61);
         print(generatedTree);
 
-        generatedTree.insert2pass(62);
-        print(generatedTree);
-
-        generatedTree.insert2pass(61);
-        print(generatedTree);
-
-        generatedTree.insert2pass(35);
-        print(generatedTree);
-
-
-        generatedTree.insert2pass(34);
-        print(generatedTree);
-
-        generatedTree.insert2pass(66);
-        print(generatedTree);
-
-        generatedTree.insert2pass(65);
-        print(generatedTree);
-
-        generatedTree.insert2pass(12);
+        generatedTree.insert(35);
         print(generatedTree);
 
 
-
-
-
-
-        generatedTree.delete(57);
+        generatedTree.insert(34);
         print(generatedTree);
-        generatedTree.delete(58);
+
+        generatedTree.insert(66);
+        print(generatedTree);
+
+        generatedTree.insert(65);
+        print(generatedTree);
+
+        generatedTree.insert(12);
+        print(generatedTree);
+
+        System.out.println("last insert performed");
+
+
+
+
+
+
+//        generatedTree.delete(57);
+//        print(generatedTree);
+        generatedTree.delete(41);
         print(generatedTree);
         generatedTree.delete(53);
         print(generatedTree);
@@ -154,9 +156,8 @@ public class StringHashMethods implements HashMethods
         print(generatedTree);
         generatedTree.delete(44);
         print(generatedTree);
-        System.out.println("coool");
-        generatedTree.delete(54);
-        print(generatedTree);
+//        generatedTree.delete(44);
+//        print(generatedTree);
 
 
 

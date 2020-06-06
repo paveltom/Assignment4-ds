@@ -105,13 +105,13 @@ public class BTree<T extends Comparable<T>> {
         Node<T> succ;
         if (pred.keysSize > this.minKeySize || combined(pred)) {
             toDelete.addKey(pred.removeKey(pred.keysSize - 1));
-            toDelete.removeKey(value);
+            if (toDelete.removeKey(value) == null) pred.removeKey(value);
             return value;
         } else {
             succ = this.successor(toDelete.getChild(toDelete.indexOf(value) + 1));
             if (succ.keysSize > minKeySize || combined(succ)) {
                 toDelete.addKey(succ.removeKey(0));
-                toDelete.removeKey(value);
+                if (toDelete.removeKey(value) == null) succ.removeKey(value);
                 return value;
             }  else { // in case toDelete is an inner node with minimal childs (of value) and minimal predecessor and successor
                 Node<T> temp1 = toDelete.getChild(toDelete.indexOf(value));
@@ -152,6 +152,8 @@ public class BTree<T extends Comparable<T>> {
                 curr.removeChild(bro); //brother is removed
             }
         }
+
+        //StringHashMethods.print((BTree<Integer>) this);
         return searchAndFix(tempChild, value);
     }
 
